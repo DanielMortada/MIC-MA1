@@ -1,0 +1,32 @@
+flowchart TD
+    Start[Start train_model] --> Init[Initialize Timer, History, Best Weights]
+    Init --> EpochLoop[Epoch Loop: 1 to num_epochs]
+    EpochLoop --> PhaseLoop[Phase Loop]
+    PhaseLoop -->|train| SetTrainMode[Set model.train]
+    PhaseLoop -->|val| SetEvalMode[Set model.eval]
+    SetTrainMode --> InitEpochVars[Initialize running stats]
+    SetEvalMode --> InitEpochVars
+    InitEpochVars --> DataLoaderLoop[Data Loader Loop]
+    DataLoaderLoop --> MoveData[Move inputs/labels to device]
+    MoveData --> ZeroGrad[Zero optimizer gradients]
+    ZeroGrad --> ForwardPass[Forward Pass]
+    ForwardPass --> IsTrainPhase{Is train phase?}
+    IsTrainPhase -->|Yes| BackwardOptimize[Backward + Optimize]
+    IsTrainPhase -->|No| UpdateStats[Update statistics]
+    BackwardOptimize --> UpdateStats
+    UpdateStats --> DataLoaderLoop
+    DataLoaderLoop -->|End of DataLoader| CalcEpochMetrics[Calculate epoch metrics]
+    CalcEpochMetrics --> StoreHistory[Store metrics in history]
+    StoreHistory --> PrintResults[Print epoch results]
+    PrintResults --> IsValPhase{Is val phase?}
+    IsValPhase -->|No| EpochLoop
+    IsValPhase -->|Yes| SchedulerCheck{Scheduler exists?}
+    SchedulerCheck -->|Yes| SchedulerStep[Scheduler Step]
+    SchedulerCheck -->|No| CheckBestAcc
+    SchedulerStep --> CheckBestAcc[Check if epoch_acc > best_acc]
+    CheckBestAcc -->|Yes| UpdateBestModel[Update best model]
+    CheckBestAcc -->|No| EpochLoop
+    UpdateBestModel --> EpochLoop
+    EpochLoop -->|End of Epochs| PrintTime[Print training time]
+    PrintTime --> LoadBestWeights[Load best model weights]
+    LoadBestWeights --> Return[Return model, history]
