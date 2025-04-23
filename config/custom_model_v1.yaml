@@ -1,0 +1,38 @@
+# Custom CNN Model Configuration
+# This configuration defines parameters for training a custom CNN model for musical instrument classification
+
+# Model configuration
+model:
+  name: custom_cnn
+  architecture: CustomMusicCNN
+  input_channels: 3
+  num_classes: 30
+  dropout_rate: 0.5
+
+# Training configuration
+training:
+  num_epochs: 50
+  batch_size: 32
+  loss_function: cross_entropy
+  optimizer:
+    name: adam
+    learning_rate: 0.001
+    weight_decay: 0.0005
+    beta1: 0.9
+    beta2: 0.999
+  scheduler:
+    name: cosine
+    t_max: 50
+    eta_min: 0.000001
+
+# Data configuration
+data:
+  img_size: 224
+  data_dir: data\raw\30_Musical_Instruments\
+  num_workers: 4
+  pin_memory: true
+
+# Augmentation
+augmentation:
+  use_augmentation: true
+  augmentation_strength: medium  # Options: light, medium, strong

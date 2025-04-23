@@ -1,0 +1,89 @@
+# Flexible Training Framework Configuration
+# This configuration defines a flexible framework for experimenting with different model configurations
+
+# Model configuration
+model:
+  # Base architecture selection
+  architecture: resnet18  # Options: resnet18, resnet34, resnet50, custom_cnn
+  pretrained: true
+  feature_extracting: false  # Set to false for full fine-tuning
+  num_classes: 30
+  
+  # Fine-tuning options
+  unfreeze_layers:  # List of layers to unfreeze if using feature extraction
+    - "layer4"
+    - "fc"
+
+# Training configuration
+training:
+  num_epochs: 30
+  batch_size: 32
+  loss_function: cross_entropy
+  
+  # Optimization
+  optimizer:
+    name: adamw  # Options: sgd, adam, adamw
+    learning_rate: 0.001
+    weight_decay: 0.0005
+    
+    # SGD specific
+    momentum: 0.9
+    nesterov: true
+    
+    # Adam/AdamW specific
+    beta1: 0.9
+    beta2: 0.999
+    
+  # Learning rate scheduling  
+  scheduler:
+    name: onecycle  # Options: step, cosine, plateau, onecycle
+    max_lr: 0.01  # For onecycle
+    
+    # StepLR parameters
+    step_size: 7  # For step scheduler
+    gamma: 0.1  # For step scheduler
+    
+    # ReduceLROnPlateau parameters
+    patience: 3  # For plateau scheduler
+    factor: 0.1  # For plateau scheduler
+    
+    # CosineAnnealingLR parameters
+    t_max: 30  # For cosine scheduler
+    
+    # Warmup
+    use_warmup: true
+    warmup_epochs: 3
+
+# Data configuration
+data:
+  img_size: 224
+  data_dir: data\raw\30_Musical_Instruments\
+  num_workers: 4
+  pin_memory: true
+  
+  # Data splitting (if not pre-split)
+  train_val_split: 0.8
+  
+  # Class balancing
+  use_weighted_sampler: false
+
+# Augmentation
+augmentation:
+  use_augmentation: true
+  augmentation_strength: medium  # Options: light, medium, strong
+  
+  # Advanced transforms if needed
+  use_mixup: false
+  mixup_alpha: 0.2
+  use_cutmix: false
+  cutmix_alpha: 1.0
+
+# Experiment tracking
+experiment:
+  save_model: true
+  save_dir: experiments/flexible_framework
+  checkpoint_frequency: 5
+  early_stopping:
+    enabled: true
+    patience: 10
+    min_delta: 0.001

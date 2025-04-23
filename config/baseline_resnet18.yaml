@@ -1,0 +1,42 @@
+# ResNet-18 Baseline Configuration
+# This configuration defines parameters for training a ResNet-18 model for musical instrument classification
+
+# Model configuration
+model:
+  name: resnet18
+  pretrained: true
+  feature_extracting: true  # Freeze all layers except the final classifier
+  num_classes: 30
+
+# Training configuration
+training:
+  num_epochs: 25
+  batch_size: 32
+  loss_function: cross_entropy
+  optimizer:
+    name: adam
+    learning_rate: 0.001
+    weight_decay: 0.0001
+  scheduler:
+    name: plateau
+    patience: 3
+    factor: 0.1
+    min_lr: 0.00001
+
+# Data configuration
+data:
+  img_size: 224
+  data_dir: data\raw\30_Musical_Instruments\
+  num_workers: 4
+  pin_memory: true
+
+# Augmentation
+augmentation:
+  use_augmentation: true
+  horizontal_flip: true
+  rotation_degrees: 15
+  color_jitter:
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.1
+    hue: 0.1
