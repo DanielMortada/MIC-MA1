@@ -94,12 +94,14 @@ python scripts/train_custom_cnn.py
 
 You can run the training on Google Colab to leverage GPU acceleration:
 
-1. Upload the project zip file to Colab
-2. Mount your Google Drive if needed for data access
-3. Use the GPU detection utility for automatic acceleration:
+1. Clone this repository directly in Colab
+2. Use the setup and GPU detection utilities:
 
 ```python
-from scripts.colab_integration import check_gpu
+from scripts.colab_integration import setup_colab_environment, check_gpu
+
+# Set up dependencies
+setup_colab_environment()
 
 # Check for GPU and get the appropriate device
 device = check_gpu()
