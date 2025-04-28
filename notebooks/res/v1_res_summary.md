@@ -26,20 +26,42 @@ The architecture incorporates these key design principles:
 
 ### Results and Insights
 
-The custom CNN achieved a test accuracy of 76%, compared to the ResNet-18 baseline's 100%. Training took approximately 1 hour and 14 minutes, reaching its best validation performance at epoch 12. Confusion matrices provide insights into class-wise performance and potential misclassifications.
+The custom CNN achieved a test accuracy of 80.67%, compared to the ResNet-18 baseline's 100%. Training took approximately 28 minutes and 47 seconds, reaching its best validation performance of 83.33% at epoch 47. The model shows steady improvement throughout training, with validation accuracy increasing from 5.33% at epoch 1 to over 80% in later epochs.
+
+**Training Progress Highlights:**
+
+* **Early Training (Epochs 1-10):** Rapid initial learning with validation accuracy improving from 5.33% to 34.67%
+* **Mid Training (Epochs 11-30):** Continued improvement with validation accuracy reaching 66.00%
+* **Late Training (Epochs 31-47):** Fine-tuning of features with validation accuracy peaking at 83.33%
+
+The difference between validation (83.33%) and test (80.67%) accuracy indicates good generalization without significant overfitting.
 
 **Insights:**
 
 * Building a CNN from scratch allows for greater control and understanding of the model's inner workings.
-* The custom architecture demonstrates the ability to learn relevant features for musical instrument classification.
-* The performance gap compared to the baseline highlights the benefits of transfer learning for complex tasks.
-* Architectural choices and regularization play a crucial role in model performance and convergence.
+* The custom architecture demonstrates strong learning capability, achieving over 80% accuracy on a 30-class problem without transfer learning.
+* The performance gap compared to the baseline (19.33% lower than ResNet-18) highlights the benefits of transfer learning for complex tasks.
+* The steady improvement over 47 epochs shows the model's ability to gradually build a hierarchical representation of musical instruments.
+
+### Comparison with ResNet-18 Baseline
+
+| Model | Parameters | Test Accuracy | Training Time | Best Epoch | Input Size |
+|-------|------------|---------------|---------------|------------|------------|
+| ResNet-18 (Transfer Learning) | 11.7 million | 100% | ~11m 20s | 8 | 224x224 |
+| Custom CNN (From Scratch) | 8.6 million | 80.67% | ~29m | 47 | 224x224 |
+
+Key differences:
+
+* The custom model achieved respectable accuracy without any pre-training
+* ResNet-18 converged much faster (best performance at epoch 8 vs. epoch 47)
+* The custom model is more parameter-efficient (8.6M vs 11.7M parameters)
 
 ### Areas of Potential Improvement
 
 Several avenues for improvement can be explored:
 
 * **Architecture Optimization:** Experimenting with different filter sizes, layer depths, and block configurations.
-* **Regularization Techniques:** Adjusting dropout rates, exploring L2 regularization, and data augmentation specific to musical instruments (e.g., audio-based augmentations).
+* **Regularization Techniques:** Adjusting dropout rates, exploring L2 regularization, and data augmentation specific to musical instruments.
+* **Training Strategy:** Implementing learning rate schedules, gradual unfreezing, or curriculum learning approaches.
 * **Ensemble Methods:** Combining multiple models for increased robustness and performance.
-* **Hyperparameter Tuning:** Fine-tuning learning rate, batch size, and optimizer parameters for optimal convergence.
+* **Limited Transfer Learning:** Exploring the middle ground by initializing only early layers with pre-trained weights.
