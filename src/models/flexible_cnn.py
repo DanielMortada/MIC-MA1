@@ -127,11 +127,11 @@ class FlexibleCNN(nn.Module):
             # Dropout layer
             if self.dropout[idx] > 0:
                 layers.append(nn.Dropout(self.dropout[idx]))
-            
             input_channels = num_filters
             
         return nn.Sequential(*layers)
-      def _make_fc_layers(self):
+    
+    def _make_fc_layers(self):
         layers = []
         
         # First FC layer takes input from flattened feature maps
