@@ -48,6 +48,7 @@ class FlexibleCNN(nn.Module):
         self.conv_layers = conv_layers
         self.fc_layers = fc_layers
         self.kernel_size = kernel_size if isinstance(kernel_size, list) else [kernel_size] * len(conv_layers)
+        self.pool_size = pool_size  # Store pool_size as class attribute
         self.dropout = dropout if isinstance(dropout, list) else [dropout] * (len(conv_layers) + len(fc_layers))
         self.activation = activation
         self.pooling_type = pooling_type
@@ -76,7 +77,8 @@ class FlexibleCNN(nn.Module):
         layers = []
         input_channels = self.in_channels
         
-        for idx, num_filters in enumerate(self.conv_layers):            # First convolutional layer in the block
+        for idx, num_filters in enumerate(self.conv_layers):
+            # First convolutional layer in the block
             layers.append(nn.Conv2d(
                 input_channels, 
                 num_filters, 
@@ -117,8 +119,7 @@ class FlexibleCNN(nn.Module):
                 layers.append(nn.ELU(inplace=True))
             else:
                 layers.append(nn.ReLU(inplace=True))
-            
-            # Pooling layer
+              # Pooling layer
             if self.pooling_type == 'max':
                 layers.append(nn.MaxPool2d(self.pool_size))
             else:  # 'avg'
@@ -127,6 +128,7 @@ class FlexibleCNN(nn.Module):
             # Dropout layer
             if self.dropout[idx] > 0:
                 layers.append(nn.Dropout(self.dropout[idx]))
+            
             input_channels = num_filters
             
         return nn.Sequential(*layers)
