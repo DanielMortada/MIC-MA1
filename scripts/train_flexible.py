@@ -21,6 +21,7 @@ from src.data.augmentation import AdvancedAugmentation
 from src.data.dataloader import load_datasets
 from src.models.baseline import get_resnet18_model, unfreeze_layers
 from src.models.custom_cnn import create_custom_cnn
+from src.models.flexible_cnn import create_flexible_cnn
 from src.training.trainer import train_model, evaluate_model
 from src.training.metrics import compute_metrics, get_confusion_matrix
 from src.visualization.plotting import plot_training_history, plot_confusion_matrix, plot_sample_predictions
@@ -66,6 +67,8 @@ def create_model(config, device):
             num_classes=num_classes,
             input_channels=model_config.get('input_channels', 3)
         )
+    elif architecture == 'flexible_cnn':
+        model = create_flexible_cnn(config)
     else:
         raise ValueError(f"Unsupported architecture: {architecture}")
     
