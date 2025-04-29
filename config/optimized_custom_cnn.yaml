@@ -1,0 +1,64 @@
+# Optimized Custom CNN Model Configuration
+# This configuration defines parameters for an optimized version of the custom CNN model
+
+# Model configuration
+model:
+  name: optimized_custom_cnn
+  architecture: CustomMusicCNN
+  input_channels: 3
+  num_classes: 30
+  dropout_rate: 0.4  # Slightly reduced from 0.5 to prevent overfitting while maintaining feature learning
+
+# Training configuration
+training:
+  num_epochs: 75  # Increased from 50 to allow for more gradual learning
+  batch_size: 32
+  loss_function: cross_entropy
+  optimizer:
+    name: adamw  # Changed from adam to adamw which has better weight decay handling
+    learning_rate: 0.001
+    weight_decay: 0.001  # Increased from 0.0005 for better regularization
+    beta1: 0.9
+    beta2: 0.999
+  scheduler:
+    name: onecycle  # Changed from cosine to onecycle for faster convergence
+    max_lr: 0.01
+    pct_start: 0.3  # Spend 30% of training in warmup phase
+
+# Data configuration
+data:
+  img_size: 224
+  data_dir: data\raw\30_Musical_Instruments\
+  num_workers: 4
+  pin_memory: true
+
+# Augmentation
+augmentation:
+  use_augmentation: true
+  augmentation_strength: strong  # Changed from medium to strong for better generalization
+  transforms:
+    horizontal_flip: true
+    vertical_flip: false
+    rotation: 20
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.2
+    hue: 0.1
+    random_erasing: true  # Adding random erasing for more robustness
+    random_crop: true  # Adding random crop for better spatial generalization
+
+# Regularization
+regularization:
+  early_stopping:
+    enabled: true
+    patience: 15
+    min_delta: 0.001
+  gradient_clipping:
+    enabled: true
+    max_norm: 1.0
+
+# Experiment tracking
+experiment:
+  save_model: true
+  save_dir: experiments/optimized_custom_cnn
+  checkpoint_frequency: 5

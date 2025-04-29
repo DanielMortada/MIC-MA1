@@ -22,13 +22,15 @@ proj-h419-MIC/
 ├── config/                  # Configuration files for experiments
 │   ├── baseline_resnet18.yaml
 │   ├── custom_model_v1.yaml
-│   └── flexible_framework.yaml
+│   ├── flexible_framework.yaml
+│   └── optimized_custom_cnn.yaml
 ├── data/                    # Dataset directory
 │   ├── processed/           # Processed dataset
 │   └── raw/                 # Raw dataset with 30 Musical Instruments
 ├── diagrams/               # Project architecture and pipeline diagrams
 │   └── TrainingPipeline.mermaid
 ├── docs/                    # Documentation and learning resources
+│   ├── cnn_optimization_strategies.md
 │   ├── crash_course.md
 │   ├── diff_scheduler_optimizer.md
 │   ├── model_architecture_comparison.md
@@ -40,6 +42,7 @@ proj-h419-MIC/
 │   ├── 2-Baseline_ResNet18.ipynb
 │   ├── 3-Model_From_Scratch_v1.ipynb
 │   ├── 4-Flexible_Model_Framework.ipynb
+│   ├── 5-Custom_Model_Optimization.ipynb
 │   ├── training_summary.md
 │   └── res/                # Notebook resources and outputs
 ├── report/                  # Project report and presentation
@@ -129,6 +132,7 @@ The `config/` directory contains several configuration templates:
 - **baseline_resnet18.yaml**: Parameters for training the ResNet18 transfer learning model
 - **custom_model_v1.yaml**: Parameters for training our custom CNN architecture
 - **flexible_framework.yaml**: Dynamic configuration supporting multiple architectures and training strategies
+- **optimized_custom_cnn.yaml**: Enhanced parameters for optimizing the custom CNN model
 
 ### Using Configurations
 
@@ -149,6 +153,28 @@ Configuration files include sections for:
 - **Data**: Augmentation strategies, preprocessing steps
 - **Evaluation**: Metrics to track during training
 
+## Model Optimization
+
+The project includes a systematic approach to optimize neural network performance:
+
+### Optimization Techniques
+
+- **Enhanced Data Augmentation**: Random erasing, stronger color jittering, and spatial transformations
+- **Advanced Learning Rate Scheduling**: OneCycle policy for faster convergence
+- **Regularization Techniques**: Gradient clipping, adaptive dropout, and early stopping
+- **Improved Weight Decay**: AdamW optimizer with properly configured weight decay
+- **Hyperparameter Tuning**: Systematic exploration of key parameters
+
+### Optimization Workflow
+
+1. Start with a baseline model (either ResNet18 or custom CNN)
+2. Apply the optimized configuration from `optimized_custom_cnn.yaml`
+3. Run training with enhanced regularization techniques
+4. Evaluate performance improvements through comprehensive metrics
+5. Analyze learning dynamics via visualization tools
+
+For a detailed guide on CNN optimization, see `docs/cnn_optimization_strategies.md`.
+
 ## Jupyter Notebooks
 
 The `notebooks/` directory contains interactive explorations of the project:
@@ -157,6 +183,7 @@ The `notebooks/` directory contains interactive explorations of the project:
 2. **2-Baseline_ResNet18.ipynb**: Implementation of the ResNet18 transfer learning approach with performance evaluation
 3. **3-Model_From_Scratch_v1.ipynb**: Development and training of custom CNN architecture from first principles
 4. **4-Flexible_Model_Framework.ipynb**: Demonstration of the flexible training framework using various model architectures
+5. **5-Custom_Model_Optimization.ipynb**: Advanced optimization techniques applied to the custom CNN model
 
 ## Acknowledgments
 
