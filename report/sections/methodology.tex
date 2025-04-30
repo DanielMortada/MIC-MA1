@@ -1,0 +1,97 @@
+% =====================================
+% Methodology Section
+% File: sections/methodology.tex
+% =====================================
+
+\section{Methodology}
+This section describes our three-phase approach to musical instrument classification, including transfer learning with ResNet-18, the development of custom CNN architectures, and our flexible experimental framework.
+
+\subsection{Phase 1: Transfer Learning with ResNet-18 vs. Custom CNN}
+In the first phase of our project, we established a strong baseline using transfer learning and developed an initial custom architecture.
+
+\subsubsection{Transfer Learning with ResNet-18}
+As a baseline approach, we adopted the ResNet-18 architecture \cite{he2016deep}, which has demonstrated strong performance across various computer vision tasks. ResNet-18 features a relatively shallow architecture compared to other ResNet variants but includes skip connections (residual blocks) that facilitate gradient flow during training, making it particularly suitable for transfer learning.
+
+Our transfer learning approach involved:
+\begin{itemize}
+    \item Initializing the network with weights pre-trained on ImageNet
+    \item Replacing the final fully-connected layer with a new layer containing 30 output units (one per instrument class)
+    \item Fine-tuning the entire network with a lower learning rate to preserve pre-learned features while adapting to the new task
+\end{itemize}
+
+The choice of ResNet-18 as a baseline was motivated by its efficient architecture, proven capability on image classification tasks, and reasonable computational requirements. The residual connections in ResNet-18 help mitigate the vanishing gradient problem, allowing for effective fine-tuning across all layers.
+
+% TODO: Insert diagram showing ResNet-18 architecture
+% Figure 2: Architecture of ResNet-18 showing the residual connections that enable
+% efficient gradient flow during training.
+
+\subsubsection{Custom CNN Architecture}
+To explore alternatives to transfer learning, we designed a custom CNN architecture specifically for musical instrument classification. The design follows a pyramidal structure with progressively increasing channel depths and reducing spatial dimensions, similar to established CNN architectures but tailored to our specific task.
+
+The custom CNN comprises five convolutional blocks with the following structure:
+\begin{itemize}
+    \item \textbf{Block 1:} 3 → 32 → 32 channels (basic edge and texture detection)
+    \item \textbf{Block 2:} 32 → 64 → 64 channels (more complex patterns)
+    \item \textbf{Block 3:} 64 → 128 → 128 channels (instrument parts and shapes)
+    \item \textbf{Block 4:} 128 → 256 → 256 channels (high-level instrument features)
+    \item \textbf{Block 5:} 256 → 512 → 512 channels (complex features)
+\end{itemize}
+
+Each block consists of two convolutional layers with batch normalization and ReLU activation, followed by max pooling for spatial dimension reduction and dropout for regularization. The progressive increase in channel depth allows the network to learn a hierarchy of features, from simple edges and textures in early layers to complex instrument-specific patterns in deeper layers.
+
+Following the convolutional blocks, global average pooling reduces the feature maps to a 512-dimensional vector, which is fed into a classifier head consisting of a hidden layer, dropout for regularization, and a final output layer with 30 units corresponding to the instrument classes.
+
+Key design principles incorporated in our custom architecture include:
+\begin{itemize}
+    \item \textbf{Progressive Feature Extraction:} Increasing channel depth through the network allows learning a hierarchy of features from simple to complex
+    \item \textbf{Balanced Network Depth:} The architecture is deep enough to learn complex features but not so deep as to suffer from optimization difficulties
+    \item \textbf{Regularization Techniques:} Batch normalization and dropout help prevent overfitting
+    \item \textbf{Parameter Efficiency:} Small kernel sizes (3×3) and appropriate channel progression keep the model computationally efficient while maintaining expressivity
+    \item \textbf{Global Average Pooling:} Reduces parameters compared to fully-connected layers and improves translation invariance
+\end{itemize}
+
+% TODO: Insert diagram illustrating the custom CNN architecture
+% Figure 3: Visual representation of our custom CNN architecture showing the five
+% convolutional blocks and classifier head.
+
+\subsection{Phase 2: Flexible Experimental Framework and Architecture Comparison (In Progress)}
+The second phase of our project extends beyond the comparison of a single custom model with ResNet-18 to explore multiple model architectures systematically. For this purpose, we developed a flexible experimental framework that enables controlled comparison of different CNN variants.
+
+\subsubsection{Flexible Experimental Framework}
+Our flexible experimental framework is designed to facilitate systematic comparison of different architectures while controlling for confounding factors. The framework provides:
+\begin{itemize}
+    \item Consistent data loading and preprocessing across all experiments
+    \item Standardized training procedures with configurable hyperparameters
+    \item Uniform evaluation metrics and visualization tools
+    \item Automated logging of results for comparative analysis
+    \item Modular architecture definition through configuration files
+\end{itemize}
+
+This approach enables us to isolate the effects of architectural changes from other variables, ensuring that performance differences can be attributed to design choices rather than implementation details. Our methodology is inspired by systematic architecture exploration approaches \cite{zoph2018learning, tan2019efficientnet} but tailored to our specific domain and constraints.
+
+\subsubsection{Architecture Variants Under Investigation}
+In the ongoing Phase 2, we are investigating several architectural variants of our custom CNN, including:
+\begin{itemize}
+    \item \textbf{Base Custom CNN:} The original architecture from Phase 1
+    \item \textbf{Deeper CNN:} Adding additional convolutional blocks to increase depth
+    \item \textbf{Wider CNN:} Increasing the number of filters in each layer
+    \item \textbf{Regularized CNN:} Incorporating additional regularization techniques
+    \item \textbf{ResNet-18:} Maintained as a standard baseline for comparison
+\end{itemize}
+
+For each variant, we are examining training dynamics, convergence speed, final accuracy, and computational efficiency. This systematic comparison will help identify the most promising architectural patterns for musical instrument classification.
+
+% TODO: Insert table or diagram showing the key differences between architecture variants
+% Figure 4: Comparison of architectural variants being evaluated in Phase 2.
+
+\subsection{Phase 3: Model Optimization (Future Work)}
+The final phase of our project will focus on optimizing the best-performing architecture identified in Phase 2. This optimization phase will explore:
+\begin{itemize}
+    \item \textbf{Hyperparameter Tuning:} Systematic optimization of learning rates, regularization parameters, and optimization algorithms
+    \item \textbf{Advanced Training Techniques:} Implementation of learning rate schedules, gradient clipping, and mixed-precision training
+    \item \textbf{Architecture Fine-Tuning:} Targeted modifications to architecture components based on Phase 2 findings
+    \item \textbf{Ensemble Methods:} Combining multiple models to improve overall system performance
+    \item \textbf{Model Compression:} Investigating techniques to reduce model size and computational requirements
+\end{itemize}
+
+The goal of Phase 3 is to push the performance boundaries of custom CNN architectures for musical instrument classification, potentially approaching or exceeding the transfer learning baseline while maintaining interpretability and efficiency.

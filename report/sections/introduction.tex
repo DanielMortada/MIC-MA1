@@ -1,0 +1,22 @@
+% =====================================
+% Introduction Section
+% File: sections/introduction.tex
+% =====================================
+
+\section{Introduction}
+Musical instrument classification from images represents a challenging computer vision task with numerous applications in music education, content-based image retrieval, and multimedia systems. Identifying instruments from visual information alone requires models that can recognize distinctive shapes, textures, and subtle details that differentiate various instrument classes. Recent advances in deep learning, particularly Convolutional Neural Networks (CNNs), have revolutionized computer vision tasks by enabling automatic feature extraction and hierarchical pattern recognition \cite{krizhevsky2012imagenet, simonyan2014very}.
+
+This paper presents a systematic three-phase approach to musical instrument classification using deep learning techniques:
+\begin{itemize}
+    \item \textbf{Phase 1 (Completed):} Comparison of transfer learning with ResNet-18 against a custom CNN architecture developed from scratch
+    \item \textbf{Phase 2 (In Progress):} Systematic comparison of multiple custom CNN architectures using a flexible experimental framework
+    \item \textbf{Phase 3 (Future Work):} Optimization of the best-performing custom architecture identified in Phase 2
+\end{itemize}
+
+The primary objective is to develop robust models capable of accurately identifying 30 different musical instrument classes from images while understanding the tradeoffs involved in different architectural and training decisions. As of this writing, Phase 1 has been completed, Phase 2 is ongoing, and Phase 3 is planned future work.
+
+The significance of this work lies in its thorough exploration of model architecture design, training strategies, and performance optimization techniques. By comparing transfer learning approaches with custom architectures, we provide insights into when pre-trained models are beneficial and when custom solutions may be more appropriate for specialized classification tasks. Additionally, our analysis of the feature extraction process helps illuminate how CNNs learn to distinguish between visually similar musical instruments.
+
+Our contributions include: (1) a comprehensive evaluation of ResNet-18 as a transfer learning baseline for musical instrument classification; (2) the development and analysis of a custom CNN architecture specifically designed for this domain; (3) a flexible experimental framework for comparing different model architectures; and (4) insights into the feature extraction process and visualization techniques that enhance model interpretability.
+
+The remainder of this paper is organized as follows: Section II describes the dataset, preprocessing steps, and experimental setup. Section III details our methodology, including the baseline ResNet-18 model, our custom CNN architecture, and the flexible experimental framework. Section IV presents experimental results from Phase 1 and the preliminary results from ongoing Phase 2 experiments. Section V concludes with a discussion of findings and directions for future research in Phase 3.

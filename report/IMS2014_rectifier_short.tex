@@ -1,0 +1,107 @@
+\documentclass[conference]{IEEEtran}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++++++
+\usepackage[pdftex]{graphicx}
+\usepackage{amsmath}
+\usepackage{eqparbox}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+%+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{codepurple},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\hyphenation{op-tical net-works semi-conduc-tor IEEEtran}
+\begin{document}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++++++
+\title{\LARGE Deep Learning Approach for Musical Instrument Classification Using Convolutional Neural Networks}
+\author{\authorblockN{Daniel Mortada}
+\authorblockA{Université Libre de Bruxelles\\
+PROJ-H419 - Biomedical engineering project in image analysis\\
+Email: daniel.mortada@ulb.be}
+\and
+\authorblockN{Olivier Debeir}
+\authorblockA{Université Libre de Bruxelles\\
+LISA - Laboratory of Image Synthesis and Analysis\\
+Email: olivier.debeir@ulb.be}}
+%+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+\maketitle
+
+
+% ================
+% # Abstract     #
+% ================
+
+\input{sections/abstract}
+
+% ========================
+% # I. Introduction      #
+% ========================
+
+\input{sections/introduction}
+
+% ===========================
+% # II. Dataset and Setup   #
+% ===========================
+
+\input{sections/dataset}
+
+% ========================
+% # III. Methodology     #
+% ========================
+
+\input{sections/methodology}
+
+% ========================
+% # IV. Results          #
+% ========================
+
+\input{sections/results}
+
+% ========================
+% # V. Conclusion        #
+% ========================
+
+\input{sections/conclusion}
+
+% ========================
+% # Acknowledgment       #
+% ========================
+\input{sections/acknowledgment}
+
+% ========================
+% # References           #
+% ========================
+% This will be filled when you run BibTeX
+\input{sections/bibliography}
+
+\end{document}

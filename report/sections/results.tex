@@ -1,0 +1,104 @@
+% =====================================
+% Results and Discussion Section
+% File: sections/results.tex
+% =====================================
+
+\section{Results and Discussion}
+
+\subsection{Phase 1 Results: ResNet-18 vs. Initial Custom CNN}
+
+\subsubsection{Baseline ResNet-18 Performance}
+The ResNet-18 model with transfer learning achieved exceptional performance on the musical instrument classification task, reaching 100\% accuracy on the test set. This perfect accuracy was achieved after only 8 epochs of fine-tuning, demonstrating the effectiveness of transfer learning when applied to this domain. The total training time was approximately 11 minutes and 20 seconds.
+
+The rapid convergence of ResNet-18 can be attributed to its pre-trained weights, which already encode general visual features learned from ImageNet. These features proved highly transferable to musical instrument classification, requiring only minor adjustments during fine-tuning to achieve optimal performance.
+
+\subsubsection{Initial Custom CNN Performance}
+Our custom CNN architecture, trained from scratch without any pre-trained weights, achieved a test accuracy of 80.67\%. This result, while lower than the ResNet-18 baseline, is still impressive considering the model was learning all features from the beginning without any prior knowledge.
+
+Training the custom CNN took approximately 29 minutes, reaching its peak validation accuracy after 47 epochs. The learning curve showed steady improvement throughout training:
+\begin{itemize}
+    \item Early training (Epochs 1-10): Rapid improvement from 5.33\% to 34.67\% validation accuracy
+    \item Mid training (Epochs 11-30): Continued learning with validation accuracy reaching 66.00\%
+    \item Late training (Epochs 31-47): Fine-tuning of features with validation accuracy peaking at 83.33\%
+\end{itemize}
+
+The difference between validation (83.33\%) and test (80.67\%) accuracy indicates reasonably good generalization without significant overfitting.
+
+% TODO: Insert learning curve figure comparing ResNet-18 and Custom CNN
+% Figure 5: Learning curves showing validation accuracy versus training epoch for
+% ResNet-18 and Custom CNN models during Phase 1.
+
+\subsubsection{Comparative Analysis of Phase 1 Models}
+Table I presents a comparison between the ResNet-18 and custom CNN models across various metrics.
+
+% TODO: Insert Table I showing the model comparison metrics
+% Table I: Comparison of ResNet-18 and Custom CNN performance metrics.
+% | Model | Parameters | Test Accuracy | Training Time | Best Epoch | Input Size |
+% |-------|------------|---------------|---------------|------------|------------|
+% | ResNet-18 (Transfer Learning) | 11.7 million | 100% | ~11m 20s | 8 | 224x224 |
+% | Custom CNN (From Scratch) | 8.6 million | 80.67% | ~29m | 47 | 224x224 |
+
+Key differences observed between the two approaches include:
+\begin{itemize}
+    \item \textbf{Convergence Speed:} ResNet-18 converged much faster (best performance at epoch 8 vs. epoch 47), highlighting the advantage of transfer learning in reducing training time
+    \item \textbf{Parameter Efficiency:} The custom CNN used fewer parameters (8.6M vs. 11.7M) while still achieving reasonable performance
+    \item \textbf{Accuracy Gap:} The 19.33\% accuracy difference demonstrates the value of transfer learning for complex image classification tasks
+    \item \textbf{Training Resources:} The custom CNN required more than twice the training time despite having fewer parameters
+\end{itemize}
+
+This comparison illustrates the tradeoff between leveraging pre-trained weights and building custom architectures. While transfer learning offers superior performance and faster convergence, the custom approach provides greater architectural control and insight into the feature learning process specific to musical instrument classification.
+
+\subsection{Phase 2 Progress: Architecture Exploration (Ongoing)}
+Phase 2 of our project is currently underway, focusing on systematic comparison of multiple CNN architectures using our flexible experimental framework. While this work is still in progress, we can share the preliminary experimental setup and initial observations.
+
+\subsubsection{Experimental Setup}
+The architecture variants being investigated include:
+\begin{itemize}
+    \item \textbf{Base Custom CNN:} Using the original architecture from Phase 1 as a baseline
+    \item \textbf{Deeper Custom CNN:} Adding a sixth convolutional block with 1024 channels
+    \item \textbf{Wider Custom CNN:} Increasing channel width by approximately 50\% at each layer
+    \item \textbf{Regularized CNN:} Adding spatial dropout and increased weight decay
+    \item \textbf{ResNet-18:} Maintained as a standard baseline for comparison
+\end{itemize}
+
+All models are being trained with consistent hyperparameters where applicable, including learning rate, batch size, and optimization algorithm, to isolate the effects of architectural changes.
+
+% TODO: Insert diagram illustrating the differences between architecture variants
+% Figure 6: Visual comparison of the different CNN architecture variants being compared in Phase 2.
+
+\subsubsection{Preliminary Observations}
+While complete results are not yet available, initial observations suggest:
+\begin{itemize}
+    \item Deeper architectures show potential for higher accuracy but require more careful initialization and training
+    \item Wider networks converge faster in early epochs but may plateau earlier than deeper variants
+    \item Regularization techniques appear particularly important as model capacity increases
+    \item The training dynamics differ significantly between architecture variants, suggesting different optimal training strategies for each
+\end{itemize}
+
+Full results from Phase 2, including detailed comparative analysis, will be presented in future work.
+
+\subsection{Feature Visualization and Interpretation}
+To better understand how both models learn to distinguish between instrument classes, we employed various visualization techniques:
+\begin{itemize}
+    \item Gradient-weighted Class Activation Mapping (Grad-CAM) to visualize regions of interest for classification decisions
+    \item t-SNE visualization of feature embeddings to examine class separation
+    \item Filter visualization to inspect learned patterns in convolutional layers
+\end{itemize}
+
+% TODO: Insert visualization figure
+% Figure 7: Visualization of model attention using Grad-CAM for various instrument classes,
+% showing the regions that influence the classification decision.
+
+These visualizations revealed that both models learn to focus on distinctive instrument features like the body shape, strings, keys, and other identifying characteristics. However, the ResNet-18 model demonstrated more refined attention to subtle details, likely due to its pre-trained feature extractors.
+
+\subsection{Planned Phase 3: Optimization Strategies}
+Based on our Phase 1 results and ongoing Phase 2 experiments, we have identified several potential optimization strategies for Phase 3:
+\begin{itemize}
+    \item \textbf{Architecture Optimization:} Fine-tuning the most promising architecture variant identified in Phase 2, drawing inspiration from efficient architecture scaling approaches \cite{tan2019efficientnet}
+    \item \textbf{Advanced Learning Rate Strategies:} Implementing cyclic learning rates or learning rate warmup
+    \item \textbf{Ensemble Methods:} Combining models with different architectural strengths
+    \item \textbf{Knowledge Distillation:} Training compact models using knowledge from larger models
+    \item \textbf{Feature Fusion:} Exploring combinations of features from different network depths
+\end{itemize}
+
+These optimization strategies will be systematically evaluated in Phase 3 to develop a final model that balances performance, computational efficiency, and interpretability.
