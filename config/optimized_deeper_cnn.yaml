@@ -1,0 +1,74 @@
+# Optimized Deeper CNN Configuration
+# This configuration defines parameters for an optimized version of the Deeper CNN model
+
+# Model configuration
+model:
+  architecture: enhanced_flexible_cnn
+  input_channels: 3
+  num_classes: 30
+  
+  # Enhanced CNN architecture configuration
+  conv_layers: [32, 64, 128, 256, 512, 512]  # Same as the deeper CNN
+  fc_layers: [512, 256]
+  kernel_size: 3
+  pool_size: 2
+  dropout: [0.1, 0.2, 0.3, 0.4, 0.5, 0.5, 0.5]  # Progressive dropout strategy
+  activation: relu
+  pooling_type: max
+  use_batch_norm: true
+  use_residual: true  # Add residual connections for better gradient flow
+  use_attention: true  # Add attention mechanisms for better feature weighting
+
+# Data configuration
+data:
+  data_dir: "data/raw/30_Musical_Instruments"
+  img_size: 224
+  batch_size: 32
+  num_workers: 4
+  pin_memory: true
+
+# Augmentation configuration
+augmentation:
+  augmentation_strength: optimized  # Using the optimized augmentation strategy
+
+# Training configuration
+training:
+  num_epochs: 75  # Increased from 30 to allow for better convergence
+  batch_size: 32
+  loss_function: cross_entropy
+  
+  # Optimizer configuration - using AdamW with weight decay
+  optimizer:
+    name: adamw
+    learning_rate: 0.001
+    weight_decay: 0.001  # Increased for better regularization
+    beta1: 0.9
+    beta2: 0.999
+  
+  # Using OneCycleLR scheduler for faster convergence and better generalization
+  scheduler:
+    name: onecycle
+    max_lr: 0.01
+    pct_start: 0.3  # Spend 30% of training in warmup phase
+    div_factor: 25.0  # Initial LR is max_lr / div_factor
+    final_div_factor: 10000.0  # Final LR is initial_lr / final_div_factor
+
+# Regularization techniques
+regularization:
+  # Additional dropout is handled in the model configuration
+  
+  # Gradient clipping to prevent exploding gradients
+  gradient_clipping:
+    max_norm: 1.0
+  
+  # Early stopping to prevent overfitting
+  early_stopping:
+    patience: 15
+    min_delta: 0.001
+
+# Experiment tracking
+experiment:
+  save_model: true
+  save_dir: experiments/optimized_deeper_cnn
+  checkpoint_frequency: 5
+  label_smoothing: 0.1  # Added label smoothing for better generalization

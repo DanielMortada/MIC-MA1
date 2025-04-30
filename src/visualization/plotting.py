@@ -1,311 +1,293 @@
 """
-Visualization utilities for plotting training progress and results.
+Visualization utilities for plotting model training and evaluation results.
 """
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
-from sklearn.metrics import confusion_matrix
-import itertools
-import torch
+from typing import Dict, List, Any, Optional, Union, Tuple
 
-def plot_training_history(history, figsize=(12, 5)):
+def plot_training_history(history: Dict[str, List[float]]) -> None:
     """
-    Plot training and validation loss and accuracy
+    Plot the training and validation metrics.
     
     Args:
-        history (dict): Training history containing loss and accuracy data
-        figsize (tuple): Figure size as (width, height)
+        history (Dict[str, List[float]]): Dictionary containing training history
+            with keys 'train_loss', 'val_loss', 'train_acc', 'val_acc', 'lr'
     """
-    plt.figure(figsize=figsize)
+    epochs = range(1, len(history['train_loss']) + 1)
+    
+    # Create a 2x2 grid of plots
+    plt.figure(figsize=(16, 10))
     
     # Plot training & validation loss
-    plt.subplot(1, 2, 1)
-    plt.plot(history['train_loss'], label='Training Loss')
-    plt.plot(history['val_loss'], label='Validation Loss')
-    plt.title('Model Loss')
-    plt.xlabel('Epoch')
+    plt.subplot(2, 2, 1)
+    plt.plot(epochs, history['train_loss'], 'b-', label='Training Loss')
+    plt.plot(epochs, history['val_loss'], 'r-', label='Validation Loss')
+    plt.title('Training and Validation Loss')
+    plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.legend()
-    plt.grid(alpha=0.3)
+    plt.grid(True)
     
     # Plot training & validation accuracy
-    plt.subplot(1, 2, 2)
-    plt.plot(history['train_acc'], label='Training Accuracy')
-    plt.plot(history['val_acc'], label='Validation Accuracy')
-    plt.title('Model Accuracy')
-    plt.xlabel('Epoch')
+    plt.subplot(2, 2, 2)
+    plt.plot(epochs, history['train_acc'], 'b-', label='Training Accuracy')
+    plt.plot(epochs, history['val_acc'], 'r-', label='Validation Accuracy')
+    plt.title('Training and Validation Accuracy')
+    plt.xlabel('Epochs')
     plt.ylabel('Accuracy')
     plt.legend()
-    plt.grid(alpha=0.3)
+    plt.grid(True)
+    
+    # Plot learning rate
+    plt.subplot(2, 2, 3)
+    plt.plot(epochs, history['lr'], 'g-')
+    plt.title('Learning Rate')
+    plt.xlabel('Epochs')
+    plt.ylabel('Learning Rate')
+    plt.grid(True)
+    
+    # Plot validation accuracy vs. learning rate
+    plt.subplot(2, 2, 4)
+    plt.scatter(history['lr'], history['val_acc'], alpha=0.7)
+    plt.title('Validation Accuracy vs. Learning Rate')
+    plt.xlabel('Learning Rate')
+    plt.ylabel('Validation Accuracy')
+    plt.xscale('log')
+    plt.grid(True)
     
     plt.tight_layout()
     plt.show()
 
-def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion Matrix',
-                          cmap=plt.cm.Blues, figsize=(10, 8), fontsize=8):
+def plot_confusion_matrix(
+    cm: np.ndarray, 
+    classes: List[str], 
+    normalize: bool = False, 
+    figsize: Tuple[int, int] = (12, 10),
+    fontsize: int = 8
+) -> None:
     """
-    Plot confusion matrix with options for normalization
+    Plot a confusion matrix.
     
     Args:
-        cm (np.array): Confusion matrix
-        classes (list): List of class names
+        cm (np.ndarray): Confusion matrix
+        classes (List[str]): List of class names
         normalize (bool): Whether to normalize the confusion matrix
-        title (str): Title for the plot
-        cmap: Colormap to use
-        figsize (tuple): Figure size
-        fontsize (int): Font size for class labels
+        figsize (Tuple[int, int]): Figure size
+        fontsize (int): Font size for labels
     """
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         fmt = '.2f'
-        title = f'Normalized {title}'
     else:
         fmt = 'd'
     
     plt.figure(figsize=figsize)
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title, fontsize=15)
-    plt.colorbar()
-    
-    # Add class labels
-    tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=90, fontsize=fontsize)
-    plt.yticks(tick_marks, classes, fontsize=fontsize)
-    
-    # Add counts as text
-    thresh = cm.max() / 2.
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, format(cm[i, j], fmt),
-                 horizontalalignment="center",
-                 color="white" if cm[i, j] > thresh else "black",
-                 fontsize=fontsize)
-    
-    plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
-    plt.show()
-
-def plot_sample_predictions(model, dataloader, class_mapping, device, num_images=8, 
-                           title="Model Predictions", figsize=(15, 10), random_seed=42):
-    """
-    Visualize model predictions on sample images
-    
-    Args:
-        model: Trained PyTorch model
-        dataloader: DataLoader containing images to sample from
-        class_mapping: Dictionary mapping from class indices to class names
-        device: Device to run model on
-        num_images (int): Number of samples to display
-        title (str): Title for the plot
-        figsize (tuple): Figure size
-        random_seed (int): Random seed for reproducibility
-    """
-    np.random.seed(random_seed)
-    model.eval()
-    
-    # Get a batch of images
-    data_iter = iter(dataloader)
-    images, labels = next(data_iter)
-    
-    # Select random samples
-    if num_images > len(images):
-        num_images = len(images)
-    
-    indices = np.random.choice(len(images), size=num_images, replace=False)
-    
-    # Make predictions
-    with torch.no_grad():
-        outputs = model(images[indices].to(device))
-        _, preds = torch.max(outputs, 1)
-    
-    # Convert to numpy for plotting
-    images_np = images[indices].cpu().numpy()
-    labels_np = labels[indices].cpu().numpy()
-    preds_np = preds.cpu().numpy()
-    
-    # Plot images with predictions
-    fig, axes = plt.subplots(2, num_images // 2, figsize=figsize)
-    axes = axes.flatten()
-    
-    for i in range(num_images):
-        # Transpose image from [C, H, W] to [H, W, C]
-        img = np.transpose(images_np[i], (1, 2, 0))
-        # Denormalize image
-        mean = np.array([0.485, 0.456, 0.406])
-        std = np.array([0.229, 0.224, 0.225])
-        img = std * img + mean
-        img = np.clip(img, 0, 1)
-        
-        # Get class names
-        true_class = class_mapping[labels_np[i]]
-        pred_class = class_mapping[preds_np[i]]
-        
-        # Display image
-        axes[i].imshow(img)
-        axes[i].set_title(f"Pred: {pred_class}\nTrue: {true_class}")
-        axes[i].axis('off')
-        
-        # Add color to title based on correct/incorrect prediction
-        if preds_np[i] == labels_np[i]:
-            axes[i].title.set_color('green')
-        else:
-            axes[i].title.set_color('red')
-    
-    plt.suptitle(title, fontsize=16)
+    sns.heatmap(cm, annot=True, fmt=fmt, cmap='Blues', 
+                xticklabels=classes, yticklabels=classes)
+    plt.xlabel('Predicted', fontsize=fontsize+2)
+    plt.ylabel('True', fontsize=fontsize+2)
+    plt.title('Confusion Matrix', fontsize=fontsize+4)
+    plt.xticks(rotation=90, fontsize=fontsize)
+    plt.yticks(rotation=0, fontsize=fontsize)
     plt.tight_layout()
     plt.show()
 
-def plot_sample_images(dataset, class_mapping, num_images=5, title="Sample Images", figsize=(15, 3), random_seed=42):
+def plot_sample_predictions(
+    model, 
+    dataloader, 
+    class_names: List[str],
+    device,
+    num_samples: int = 8,
+    figsize: Tuple[int, int] = (15, 10)
+) -> None:
     """
-    Display sample images from a dataset with their class labels.
-    
-    Args:
-        dataset: PyTorch Dataset object
-        class_mapping: Dictionary mapping from class indices to class names
-        num_images (int): Number of images to display
-        title (str): Plot title
-        figsize (tuple): Figure size
-        random_seed (int): Random seed for reproducibility
-    """
-    # Set random seed for reproducibility
-    np.random.seed(random_seed)
-    
-    # Create subplot
-    fig, axes = plt.subplots(1, num_images, figsize=figsize)
-    
-    # Ensure axes is always a numpy array (even when num_images=1)
-    if num_images == 1:
-        axes = np.array([axes])
-        
-    for i in range(num_images):
-        # Get a random sample
-        idx = np.random.randint(0, len(dataset))
-        img, label = dataset[idx]
-        
-        # Convert from tensor format [C, H, W] to image format [H, W, C]
-        if isinstance(img, torch.Tensor):
-            img = img.permute(1, 2, 0).numpy()
-            
-            # Denormalize the image for display if needed
-            # Assuming normalization with ImageNet mean and std
-            img = img * np.array([0.229, 0.224, 0.225]) + np.array([0.485, 0.456, 0.406])
-            img = np.clip(img, 0, 1)
-        
-        # Get class name from the mapping
-        class_name = class_mapping[label] if isinstance(label, int) else class_mapping[label.item()]
-        
-        # Display the image
-        axes[i].imshow(img)
-        axes[i].set_title(f"Class: {class_name}")
-        axes[i].axis('off')
-    
-    plt.suptitle(title, fontsize=14)
-    plt.tight_layout()
-    plt.show()
-
-def plot_class_distribution(dataloader, class_names, figsize=(12, 6)):
-    """
-    Plot the distribution of classes in a dataset
-    
-    Args:
-        dataloader: PyTorch DataLoader
-        class_names (list): List of class names
-        figsize (tuple): Figure size
-    """
-    # Count instances of each class
-    class_counts = {}
-    for _, labels in dataloader:
-        for label in labels:
-            label_idx = label.item()
-            if label_idx in class_counts:
-                class_counts[label_idx] += 1
-            else:
-                class_counts[label_idx] = 1
-    
-    # Sort by class index
-    sorted_counts = sorted(class_counts.items())
-    indices = [x[0] for x in sorted_counts]
-    counts = [x[1] for x in sorted_counts]
-    
-    # Get class names
-    if class_names is not None:
-        labels = [class_names[i] for i in indices]
-    else:
-        labels = [f"Class {i}" for i in indices]
-    
-    plt.figure(figsize=figsize)
-    plt.bar(range(len(counts)), counts, tick_label=labels)
-    plt.xticks(rotation=90)
-    plt.xlabel('Class')
-    plt.ylabel('Number of instances')
-    plt.title('Class Distribution')
-    plt.tight_layout()
-    plt.show()
-
-def plot_sample_images(dataset, class_mapping, num_images=5, title="Sample Images", figsize=(15, 3), random_seed=42):
-    """
-    Display sample images from a dataset with their class labels.
-    
-    Args:
-        dataset: PyTorch Dataset object
-        class_mapping: Dictionary mapping from class indices to class names
-        num_images (int): Number of images to display
-        title (str): Plot title
-        figsize (tuple): Figure size
-        random_seed (int): Random seed for reproducibility
-    """
-    import torch
-    import numpy as np
-    import matplotlib.pyplot as plt
-    
-    # Set random seed for reproducibility
-    np.random.seed(random_seed)
-    
-    # Create subplot
-    fig, axes = plt.subplots(1, num_images, figsize=figsize)
-    
-    # Ensure axes is always a numpy array (even when num_images=1)
-    if num_images == 1:
-        axes = np.array([axes])
-        
-    for i in range(num_images):
-        # Get a random sample
-        idx = np.random.randint(0, len(dataset))
-        img, label = dataset[idx]
-        
-        # Convert from tensor format [C, H, W] to image format [H, W, C]
-        if isinstance(img, torch.Tensor):
-            img = img.permute(1, 2, 0).numpy()
-            
-            # Denormalize the image for display if needed
-            # Assuming normalization with ImageNet mean and std
-            img = img * np.array([0.229, 0.224, 0.225]) + np.array([0.485, 0.456, 0.406])
-            img = np.clip(img, 0, 1)
-        
-        # Get class name from the mapping
-        class_name = class_mapping[label] if isinstance(label, int) else class_mapping[label.item()]
-        
-        # Display the image
-        axes[i].imshow(img)
-        axes[i].set_title(f"Class: {class_name}")
-        axes[i].axis('off')
-    
-    plt.suptitle(title, fontsize=14)
-    plt.tight_layout()
-    plt.show()
-
-def visualize_model_layers(model, input_tensor, layer_names=None, figsize=(15, 10)):
-    """
-    Visualize activations of intermediate layers in a model
-    
-    Note: This function requires model hooks to be set up. It's a simplified version.
-    For complete functionality, hooks need to be registered to the specified layers.
+    Plot sample predictions from the model.
     
     Args:
         model: PyTorch model
-        input_tensor: Input tensor to pass through the model
-        layer_names (list): List of layer names to visualize (if None, will try to visualize conv layers)
-        figsize (tuple): Figure size
+        dataloader: DataLoader containing samples to visualize
+        class_names (List[str]): List of class names
+        device: Device to run inference on
+        num_samples (int): Number of samples to visualize
+        figsize (Tuple[int, int]): Figure size
     """
-    print("Note: This is a placeholder function. To use it effectively, you'll need to register hooks to the model layers.")
-    print("Please refer to the PyTorch documentation on hooks for more information.")
+    import torch
+    from torchvision import transforms
+    
+    # Set the model to evaluation mode
+    model.eval()
+    
+    # Get a batch of data
+    images, labels = next(iter(dataloader))
+    
+    # Only select a subset of images
+    images = images[:num_samples]
+    labels = labels[:num_samples]
+    
+    # Make predictions
+    with torch.no_grad():
+        outputs = model(images.to(device))
+        _, preds = torch.max(outputs, 1)
+    
+    # Denormalize the images for visualization
+    denormalize = transforms.Compose([
+        transforms.Normalize(mean=[0, 0, 0], std=[1/0.229, 1/0.224, 1/0.225]),
+        transforms.Normalize(mean=[-0.485, -0.456, -0.406], std=[1, 1, 1]),
+    ])
+    
+    # Plot the images
+    fig = plt.figure(figsize=figsize)
+    
+    for i in range(len(images)):
+        # Denormalize and convert to numpy array
+        img = denormalize(images[i])
+        img = torch.clamp(img, 0, 1)
+        img = img.permute(1, 2, 0).cpu().numpy()
+        
+        # Get the prediction and true label
+        pred_label = class_names[preds[i].item()]
+        true_label = class_names[labels[i].item()]
+        
+        # Add subplot
+        ax = fig.add_subplot(2, num_samples//2, i+1)
+        ax.imshow(img)
+        
+        # Color the title based on whether prediction is correct
+        title_color = 'green' if pred_label == true_label else 'red'
+        ax.set_title(f"Pred: {pred_label}\nTrue: {true_label}", color=title_color)
+        ax.axis('off')
+    
+    plt.tight_layout()
+    plt.show()
+
+def plot_learning_rate_finder_results(
+    learning_rates: List[float],
+    losses: List[float],
+    skip_start: int = 5,
+    skip_end: int = 5
+) -> Tuple[plt.Figure, plt.Axes]:
+    """
+    Plot the results of the learning rate finder.
+    
+    Args:
+        learning_rates (List[float]): List of learning rates
+        losses (List[float]): List of corresponding losses
+        skip_start (int): Number of batches to skip at the start
+        skip_end (int): Number of batches to skip at the end
+        
+    Returns:
+        Tuple[plt.Figure, plt.Axes]: Figure and axes objects
+    """
+    fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+    
+    # Skip the first few batches which are often noisy and the last few
+    # which are often diverging
+    learning_rates = learning_rates[skip_start:-skip_end] if skip_end > 0 else learning_rates[skip_start:]
+    losses = losses[skip_start:-skip_end] if skip_end > 0 else losses[skip_start:]
+    
+    ax.plot(learning_rates, losses)
+    ax.set_xscale('log')
+    ax.set_xlabel('Learning Rate')
+    ax.set_ylabel('Loss')
+    ax.set_title('Learning Rate Finder Results')
+    ax.grid(True)
+    
+    # Add vertical line at the learning rate with the steepest gradient
+    # This is one heuristic for choosing a good learning rate
+    gradients = np.gradient(losses, np.log(learning_rates))
+    steepest_idx = np.argmin(gradients)
+    optimal_lr = learning_rates[steepest_idx]
+    
+    ax.axvline(x=optimal_lr, color='r', linestyle='--', 
+               label=f'Steepest Gradient: {optimal_lr:.1e}')
+    
+    # Add vertical line at the learning rate with the minimum loss
+    # This is often too high as a starting point
+    min_loss_idx = np.argmin(losses)
+    min_loss_lr = learning_rates[min_loss_idx]
+    
+    ax.axvline(x=min_loss_lr, color='g', linestyle='--',
+               label=f'Min Loss: {min_loss_lr:.1e}')
+    
+    # Suggest a reasonable learning rate (divide by 10)
+    suggested_lr = optimal_lr / 10
+    ax.axvline(x=suggested_lr, color='y', linestyle='-.',
+               label=f'Suggested LR: {suggested_lr:.1e}')
+    
+    ax.legend()
+    plt.tight_layout()
+    
+    return fig, ax
+
+def plot_feature_maps(
+    model,
+    image,
+    layer_idx: int = 0,
+    num_filters: int = 16,
+    figsize: Tuple[int, int] = (12, 8)
+) -> None:
+    """
+    Visualize feature maps from a specific layer of the model.
+    
+    Args:
+        model: PyTorch model
+        image: Input image tensor
+        layer_idx (int): Index of the layer to visualize
+        num_filters (int): Number of filters to visualize
+        figsize (Tuple[int, int]): Figure size
+    """
+    import torch
+    
+    # Set the model to evaluation mode
+    model.eval()
+    
+    # Get a list of all feature extractors
+    feature_extractor_layers = []
+    for name, module in model.named_modules():
+        if isinstance(module, torch.nn.Conv2d):
+            feature_extractor_layers.append(module)
+    
+    # Ensure valid layer index
+    if layer_idx >= len(feature_extractor_layers):
+        print(f"Layer index {layer_idx} out of range. Model has {len(feature_extractor_layers)} convolutional layers.")
+        return
+    
+    # Get the feature maps
+    with torch.no_grad():
+        # Forward pass through the model up to the selected layer
+        activation = {}
+        
+        def get_activation(name):
+            def hook(model, input, output):
+                activation[name] = output.detach()
+            return hook
+        
+        # Register hook to the layer
+        handle = feature_extractor_layers[layer_idx].register_forward_hook(get_activation('feature_maps'))
+        
+        # Forward pass
+        _ = model(image.unsqueeze(0))
+        
+        # Get the feature maps
+        feature_maps = activation['feature_maps']
+        
+        # Remove the hook
+        handle.remove()
+    
+    # Get the number of filters
+    num_filters_actual = min(num_filters, feature_maps.shape[1])
+    
+    # Plot the feature maps
+    plt.figure(figsize=figsize)
+    
+    for i in range(num_filters_actual):
+        plt.subplot(4, num_filters_actual // 4 + (1 if num_filters_actual % 4 != 0 else 0), i+1)
+        plt.imshow(feature_maps[0, i].cpu().numpy(), cmap='viridis')
+        plt.axis('off')
+        plt.title(f'Filter {i+1}')
+    
+    plt.suptitle(f'Feature Maps - Layer {layer_idx} (Conv2d)', fontsize=16)
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.9)
+    plt.show()
