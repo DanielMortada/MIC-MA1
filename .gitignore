@@ -129,3 +129,4 @@ src/training/__pycache__/scheduler.cpython-312.pyc
 src/training/__pycache__/enhanced_trainer.cpython-312.pyc
 src/data/__pycache__/dataset.cpython-312.pyc
 src/models/__pycache__/enhanced_cnn.cpython-312.pyc
+tests/optimized_deeper_cnn/optimized_model.pth
