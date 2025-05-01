@@ -84,14 +84,43 @@ For each variant, we are examining training dynamics, convergence speed, final a
 % TODO: Insert table or diagram showing the key differences between architecture variants
 % Figure 4: Comparison of architectural variants being evaluated in Phase 2.
 
-\subsection{Phase 3: Model Optimization (Future Work)}
-The final phase of our project will focus on optimizing the best-performing architecture identified in Phase 2. This optimization phase will explore:
+\subsection{Phase 3: Deeper CNN Model Optimization}
+The final phase of our project focused on optimizing the Deeper CNN architecture, which was identified as the best-performing custom model from Phase 2. Based on the analysis of architecture performance, we developed a systematic optimization strategy with four main components:
+
 \begin{itemize}
-    \item \textbf{Hyperparameter Tuning:} Systematic optimization of learning rates, regularization parameters, and optimization algorithms
-    \item \textbf{Advanced Training Techniques:} Implementation of learning rate schedules, gradient clipping, and mixed-precision training
-    \item \textbf{Architecture Fine-Tuning:} Targeted modifications to architecture components based on Phase 2 findings
-    \item \textbf{Ensemble Methods:} Combining multiple models to improve overall system performance
-    \item \textbf{Model Compression:} Investigating techniques to reduce model size and computational requirements
+    \item \textbf{Enhanced Data Augmentation:} Implementation of stronger augmentation techniques including random erasing and random crops to improve model robustness.
+    
+    \item \textbf{Architecture Refinements:} Fine-tuning the dropout strategy with progressive dropout rates, adding residual connections to improve gradient flow, and exploring channel attention mechanisms to focus on important features.
+    
+    \item \textbf{Training Strategy Optimization:} Implementation of the AdamW optimizer with optimized weight decay, OneCycle learning rate scheduling with appropriate warmup, and gradient clipping for training stability.
+    
+    \item \textbf{Experimental Techniques:} Exploration of label smoothing, longer training with early stopping, and hyperparameter optimization.
 \end{itemize}
 
-The goal of Phase 3 is to push the performance boundaries of custom CNN architectures for musical instrument classification, potentially approaching or exceeding the transfer learning baseline while maintaining interpretability and efficiency.
+The optimization strategy was implemented incrementally, with careful monitoring of validation performance to guide adjustments. Our approach was designed to systematically improve the Deeper CNN's performance while maintaining its architectural benefits.
+
+\subsubsection{Enhanced Architecture Components}
+For the architectural enhancements, we implemented:
+
+\begin{itemize}
+    \item \textbf{Residual Connections:} Skip connections between convolutional blocks to improve gradient flow in the deep network, similar to those in ResNet but adapted to our custom architecture.
+    
+    \item \textbf{Progressive Dropout:} A carefully tuned dropout pattern [0.1, 0.15, 0.2, 0.25, 0.3, 0.4] that gradually increases through the network, providing stronger regularization in deeper layers where overfitting is more likely.
+    
+    \item \textbf{Channel Attention:} Optional attention mechanisms that allow the network to dynamically emphasize important feature channels based on their relevance to the classification task.
+\end{itemize}
+
+\subsubsection{Advanced Training Configuration}
+Our training configuration was optimized with:
+
+\begin{itemize}
+    \item \textbf{AdamW Optimizer:} Used with a weight decay of 0.0005 for better regularization properties compared to standard Adam.
+    
+    \item \textbf{OneCycle Learning Rate:} Implemented with a maximum learning rate of 0.003 and 30\% of training spent in the warmup phase, allowing faster convergence with stable training.
+    
+    \item \textbf{Gradient Clipping:} Applied with a maximum norm of 2.0 to prevent exploding gradients and stabilize training.
+    
+    \item \textbf{Extended Training:} Allowed up to 75 epochs with a patient early stopping mechanism to ensure convergence without overfitting.
+\end{itemize}
+
+The goal of Phase 3 was to push the performance boundaries of our custom CNN architecture for musical instrument classification, building upon the insights gained in Phase 2 while maintaining interpretability and efficiency.
