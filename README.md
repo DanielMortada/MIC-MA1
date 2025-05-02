@@ -1,261 +1,158 @@
 # Musical Instrument Classification (MIC)
 
-A deep learning project for classifying images of musical instruments using convolutional neural networks.
+A computer vision project for multi-class classification of musical instruments using deep learning techniques.
 
 ## Project Overview
 
-This project implements and evaluates deep learning models for classifying images of 30 different musical instruments. It serves as part of the PROJ-H-419 course requirements.
+This research project implements and evaluates various deep learning models for classifying images of 30 different musical instruments. The work combines both state-of-the-art transfer learning approaches and custom CNN architectures with advanced optimization techniques.
 
-### Key Features
+### Research Objectives
 
-- Multi-class image classification (30 musical instrument classes)
-- Implementation of both transfer learning (ResNet18) and custom CNN architectures
-- Comprehensive data preprocessing and augmentation pipeline
-- Modular, reusable codebase structure
-- Experiment tracking and reproducible configurations
-- Performance evaluation with detailed metrics and visualizations
-- Advanced model architectures with attention mechanisms and residual connections
+1. Establish a strong baseline using transfer learning (ResNet-18)
+2. Develop custom CNN architectures optimized for musical instrument classification
+3. Analyze model performance through detailed comparative evaluation
+4. Implement and validate advanced architectural enhancements, including attention mechanisms and residual connections
+5. Apply systematic optimization strategies to close the performance gap between custom models and transfer learning approaches
 
-## Project Structure
+## Repository Structure
 
-```bash
+```
 proj-h419-MIC/
-├── config/                  # Configuration files for experiments
-│   ├── baseline_resnet18.yaml
-│   ├── custom_cnn_base.yaml
-│   ├── custom_cnn_deeper.yaml
-│   ├── custom_cnn_regularized.yaml
-│   ├── custom_cnn_wider.yaml
-│   ├── custom_model_v1.yaml
-│   ├── flexible_framework.yaml
-│   ├── optimized_custom_cnn.yaml
-│   ├── optimized_deeper_cnn.yaml
-│   └── resnet18_baseline.yaml
+├── config/                  # Experiment configuration files
 ├── data/                    # Dataset directory
-│   ├── processed/           # Processed dataset
-│   └── raw/                 # Raw dataset with 30 Musical Instruments
-├── diagrams/                # Project architecture and pipeline diagrams
-│   └── TrainingPipeline.mermaid
-├── docs/                    # Documentation and learning resources
-│   ├── cnn_optimization_strategies.md
-│   ├── crash_course.md
-│   ├── diff_scheduler_optimizer.md
-│   ├── model_architecture_comparison.md
-│   ├── pipeline.md
-│   └── training_and_eval_basics.md
-├── notebooks/               # Jupyter notebooks for exploration and visualization
-│   ├── 1-Dataset Acquisition and Exploration.ipynb
+│   ├── processed/           # Preprocessed data
+│   └── raw/                 # Raw dataset (30 Musical Instruments)
+├── notebooks/               # Research notebooks with implementations and analysis
+│   ├── 1-Dataset_Exploration.ipynb
 │   ├── 2_Baseline_ResNet18.ipynb
-│   ├── 3_Model_From_Scratch_v1_fixed.ipynb
+│   ├── 3_Model_From_Scratch.ipynb
 │   ├── 4_Flexible_Model_Comparison.ipynb
 │   ├── 5_Custom_Model_Optimization.ipynb
 │   ├── 6_Deeper_CNN_Optimisation.ipynb
-│   └── res/                 # Notebook resources and outputs
-├── report/                  # Project report and presentation
+│   └── res/                 # Results and analysis artifacts
+├── src/                     # Source code
+│   ├── data/                # Data processing modules
+│   ├── models/              # Model architectures
+│   ├── training/            # Training utilities
+│   └── visualization/       # Visualization tools
 ├── scripts/                 # Training and evaluation scripts
-│   ├── colab_integration.py
-│   ├── evaluate_model.py
-│   ├── train_baseline.py
-│   ├── train_custom_cnn.py
-│   ├── train_flexible.py
-│   └── train_parallel.py
-├── src/                    # Source code
-│   ├── data/               # Data processing modules
-│   │   ├── augmentation.py
-│   │   ├── dataloader.py
-│   │   ├── dataset.py
-│   │   └── preprocessing.py
-│   ├── models/             # Model architecture modules
-│   │   ├── attention.py
-│   │   ├── baseline.py
-│   │   ├── custom_cnn.py
-│   │   ├── dataparallel_utils.py
-│   │   ├── enhanced_cnn.py
-│   │   ├── enhanced_flexible_cnn.py
-│   │   ├── flexible_cnn.py
-│   │   └── model_utils.py
-│   ├── training/           # Training utilities
-│   │   ├── enhanced_trainer.py
-│   │   ├── metrics.py
-│   │   ├── scheduler.py
-│   │   └── trainer.py
-│   └── visualization/      # Visualization utilities
-│       └── plotting.py
-└── tests/                  # Test results and experiment outputs
-    ├── base-cnn-20250430.085509/
-    ├── deeper-cnn-20250430.093116/
-    ├── optimized_deeper_cnn/
-    ├── regularized-cnn-20250430.111203/
-    ├── resnet_18.20250430.114435/
-    └── wider-cnn-20250430.103336/
+└── tests/                   # Experiment outputs and results
 ```
 
-## Getting Started
+## Requirements and Setup
 
-### Prerequisites
+### Dependencies
 
 - Python 3.8+
 - PyTorch 1.13+
-- CUDA (optional, but recommended for GPU acceleration)
+- torchvision 0.13+
+- scikit-learn
+- matplotlib
+- seaborn
+- PyYAML
+- tqdm
 
 ### Installation
 
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+```
+pip install -r requirements.txt
+```
 
-2. Prepare the dataset:
-   - Place the raw 30 Musical Instruments dataset in `data/raw/`
-   - The data should be organized with train/valid/test splits
+### Dataset Preparation
+
+The project uses the 30 Musical Instruments dataset, which should be organized with the following structure:
+
+```
+data/raw/30_Musical_Instruments/
+├── train/  # Training data with class subfolders
+├── valid/  # Validation data with class subfolders
+└── test/   # Test data with class subfolders
+```
+
+## Experiments and Model Architecture
 
 ### Running Experiments
 
-#### Training the ResNet18 baseline model
+The project includes several training scripts for different model architectures:
 
 ```bash
+# Train ResNet-18 baseline
 python scripts/train_baseline.py --config config/baseline_resnet18.yaml
-```
 
-#### Training a custom CNN model
-
-```bash
+# Train custom CNN models
 python scripts/train_custom_cnn.py --config config/custom_cnn_base.yaml
-```
 
-#### Training with multiple model variations
-
-```bash
+# Train multiple architectures for comparison
 python scripts/train_flexible.py --config config/flexible_framework.yaml
-```
 
-#### Evaluating a trained model
-
-```bash
+# Evaluate a trained model
 python scripts/evaluate_model.py --model_path tests/optimized_deeper_cnn/best_model.pth
 ```
 
-#### Using Google Colab for GPU acceleration
+### Model Architectures
 
-You can run the training on Google Colab to leverage GPU acceleration:
+Our research systematically evaluates the following model architectures:
 
-1. Clone this repository directly in Colab
-2. Use the setup and GPU detection utilities:
+1. **ResNet-18 (Baseline)**: Transfer learning approach with a pre-trained model and fine-tuning
 
-```python
-from scripts.colab_integration import setup_colab_environment, check_gpu
+2. **Custom CNN Variants**:
+   - **Base CNN**: Standard convolutional architecture with batch normalization
+   - **Deeper CNN**: Extended architecture with additional convolutional layers
+   - **Wider CNN**: Architecture with increased filter counts in each layer
+   - **Regularized CNN**: Base architecture with enhanced regularization techniques
 
-# Set up dependencies
-setup_colab_environment()
+3. **Optimized Deeper CNN**: Our most advanced architecture featuring:
+   - Selective attention mechanisms
+   - Residual connections
+   - Graduated dropout strategy
+   - Class-specific augmentation
+   - Mixed precision training
 
-# Check for GPU and get the appropriate device
-device = check_gpu()
+## Results Summary
 
-# Your device will automatically be set to use GPU if available
-```
+Our research provides several key findings:
 
-## Model Architectures
+1. **Model Performance Comparison**:
+   - ResNet-18 (Transfer Learning): 99.33% test accuracy
+   - Original Deeper CNN: 86.67% test accuracy
+   - Optimized Deeper CNN: 93.33% test accuracy
 
-### Baseline Model (ResNet18)
-We use a pre-trained ResNet18 model with a modified classifier head to establish a strong baseline.
+2. **Key Architectural Improvements**:
+   - Selective attention mechanisms improved feature focus
+   - Residual connections enhanced gradient flow
+   - Graduated dropout strategy provided better regularization
 
-### Custom CNN
-Our custom CNN architecture features multiple convolutional blocks with batch normalization, dropout, and a global pooling strategy.
+3. **Training Optimizations**:
+   - AdamW optimizer with weight decay
+   - OneCycleLR learning rate scheduling
+   - Mixed precision training reduced computation time
 
-### Enhanced Models
-We've implemented several enhanced architectures:
+4. **Class-Specific Performance**:
+   - Most challenging instruments: Alphorn, Flute, Clarinet, Didgeridoo
+   - Best-performing instruments: Accordion, Banjo, Cello, Trumpet
 
-1. **Deeper CNN**: More convolutional layers for better feature extraction
-2. **Wider CNN**: More filters per layer for capturing diverse features
-3. **Regularized CNN**: Enhanced dropout and augmentation for better generalization
-4. **Attention-Enhanced CNN**: Incorporating attention mechanisms to focus on important features
-5. **Residual CNN**: Including residual connections for better gradient flow
+## Research Methodology
 
-## Results
+Our approach follows a systematic optimization strategy:
 
-Results from our model experiments will be published upon completion of the project.
+1. **Baseline Establishment**: We begin with transfer learning using ResNet-18 to establish a strong performance baseline
 
-## Configuration System
+2. **Architecture Exploration**: We systematically evaluate multiple custom CNN architectures with varying depth, width, and regularization strategies
 
-The project uses a YAML-based configuration system to manage experiment parameters. This approach offers:
+3. **Strategic Optimization**: Based on performance analysis, we identify the Deeper CNN as the most promising architecture and apply targeted optimization techniques:
+   - Architecture modifications through selective attention and residual connections
+   - Learning dynamics improvements via advanced optimizers and schedulers
+   - Data utilization enhancement with class-specific augmentation
+   - Computation efficiency with mixed precision training
 
-- **Reproducibility**: Each experiment can be precisely recreated using the same config file
-- **Flexibility**: Easy modification of hyperparameters without changing code
-- **Documentation**: Configurations serve as a record of experiment parameters
-- **Standardization**: Common structure for all experiment types
+4. **Comprehensive Evaluation**: We provide detailed performance analysis including:
+   - Confusion matrices to identify class-specific performance
+   - Learning curve analysis to understand optimization effectiveness
+   - F1-score analysis to evaluate balanced performance
+   - Computational efficiency metrics
 
-### Configuration Files
+For detailed research findings, please refer to the notebooks in the `notebooks/` directory, particularly `6_Deeper_CNN_Optimisation.ipynb` for our most advanced model.
 
-The `config/` directory contains several configuration templates:
+## Conclusion
 
-- **baseline_resnet18.yaml**: Parameters for training the ResNet18 transfer learning model
-- **custom_cnn_base.yaml**: Parameters for training our basic custom CNN architecture
-- **custom_cnn_deeper.yaml**: Configuration for deeper network architecture
-- **custom_cnn_wider.yaml**: Configuration for wider network architecture
-- **custom_cnn_regularized.yaml**: Enhanced parameters with regularization techniques
-- **optimized_deeper_cnn.yaml**: Optimized deeper CNN model with advanced features
-
-### Using Configurations
-
-To use a configuration file with the flexible training framework:
-
-```bash
-python scripts/train_flexible.py --config config/flexible_framework.yaml
-```
-
-### Key Configuration Parameters
-
-Configuration files include sections for:
-
-- **Model**: Architecture type, pretrained options, layer freezing/unfreezing
-- **Training**: Epochs, batch size, loss function
-- **Optimizer**: Type (SGD, Adam, AdamW), learning rate, weight decay
-- **Scheduler**: Learning rate scheduling strategy
-- **Data**: Augmentation strategies, preprocessing steps
-- **Evaluation**: Metrics to track during training
-
-## Model Optimization
-
-The project includes a systematic approach to optimize neural network performance:
-
-### Optimization Techniques
-
-- **Enhanced Data Augmentation**: Random erasing, stronger color jittering, and spatial transformations
-- **Advanced Learning Rate Scheduling**: OneCycle policy for faster convergence
-- **Regularization Techniques**: Gradient clipping, adaptive dropout, and early stopping
-- **Improved Weight Decay**: AdamW optimizer with properly configured weight decay
-- **Architecture Enhancements**: Attention mechanisms and residual connections
-- **Hyperparameter Tuning**: Systematic exploration of key parameters
-
-### Optimization Workflow
-
-1. Start with a baseline model (either ResNet18 or custom CNN)
-2. Apply the optimized configuration from `optimized_custom_cnn.yaml`
-3. Run training with enhanced regularization techniques
-4. Evaluate performance improvements through comprehensive metrics
-5. Analyze learning dynamics via visualization tools
-
-For a detailed guide on CNN optimization, see `docs/cnn_optimization_strategies.md`.
-
-## Jupyter Notebooks
-
-The `notebooks/` directory contains interactive explorations of the project:
-
-1. **1-Dataset Acquisition and Exploration.ipynb**: Initial dataset inspection, class distribution analysis, and sample visualization
-2. **2_Baseline_ResNet18.ipynb**: Implementation of the ResNet18 transfer learning approach with performance evaluation
-3. **3_Model_From_Scratch_v1_fixed.ipynb**: Development and training of custom CNN architecture from first principles
-4. **4_Flexible_Model_Comparison.ipynb**: Demonstration of the flexible training framework using various model architectures
-5. **5_Custom_Model_Optimization.ipynb**: Advanced optimization techniques applied to the custom CNN model
-6. **6_Deeper_CNN_Optimisation.ipynb**: Implementation of deeper architectures with attention mechanisms and residual connections
-
-## Contributors
-
-- [Your Name]
-- [Team Member 1]
-- [Team Member 2]
-
-## Acknowledgments
-
-- The dataset used in this project
-- PyTorch library and community
-- PROJ-H-419 course staff and colleagues
+This project demonstrates that carefully optimized custom CNN architectures can approach the performance of transfer learning models while maintaining architectural simplicity and interpretability. Our optimized Deeper CNN achieves 93.33% test accuracy, significantly closing the gap with the ResNet-18 baseline (99.33%).
