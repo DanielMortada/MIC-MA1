@@ -4,20 +4,22 @@ This paper presented a comprehensive three-phase approach to musical instrument 
 
 In Phase 2, we systematically compared multiple architectural variants using a flexible experimental framework. This comparison revealed that the Deeper CNN architecture (86.67\% test accuracy) outperformed other custom variants including Base CNN (85.33\%), Regularized CNN (81.33\%), and Wider CNN (80.67\%). These results demonstrated that increased depth provides more benefit than increased width for musical instrument classification, while highlighting the importance of balancing regularization with model capacity.
 
-Phase 3 focused on optimizing the Deeper CNN architecture through a methodical enhancement process. We implemented residual connections, refined the dropout strategy, optimized the training procedure with AdamW and OneCycle learning rate scheduling, and carefully balanced data augmentation. These optimizations yielded significant improvements, with the optimized model achieving 92.33\% test accuracy—a 5.66\% improvement over the original Deeper CNN and substantially closing the gap with the transfer learning approach.
+Phase 3 focused on optimizing the Deeper CNN architecture through a methodical enhancement process. We implemented selective attention mechanisms applied exclusively to deeper layers, residual connections, a finely calibrated graduated dropout strategy [0.05, 0.1, 0.15, 0.2, 0.25, 0.3], class-specific augmentation targeting challenging instruments, and mixed precision training. These optimizations yielded significant improvements, with the optimized model achieving 93.33\% test accuracy—a 6.66\% improvement over the original Deeper CNN and substantially closing the gap with the transfer learning approach to just 6.00\%.
 
 Our work provides several important contributions to the understanding of deep learning approaches for specialized image classification tasks:
 
 \begin{itemize}
-    \item A systematic methodology for developing, comparing, and optimizing custom CNN architectures for domain-specific tasks
+    \item A systematic methodology for developing, comparing, and optimizing custom CNN architectures for domain-specific tasks, including techniques for addressing class-specific performance disparities
     
-    \item Empirical evidence on the relative importance of architectural components like depth, width, and regularization for musical instrument classification
+    \item Empirical evidence on the effectiveness of selective attention mechanisms applied only to deeper network layers, demonstrating how focused architectural enhancements can yield targeted improvements without unnecessary computational overhead
     
-    \item Insights into effective optimization strategies that can significantly improve custom model performance without resorting to transfer learning
+    \item Insights into the relative importance of architectural components for musical instrument classification, with depth proving more valuable than width, and properly calibrated graduated dropout outperforming uniform regularization
     
-    \item Visualization techniques that provide interpretable insights into how models learn to distinguish between instrument classes
+    \item Identification of inherently challenging instrument classifications (Alphorn, Flute, Clarinet, Didgeridoo) and development of targeted strategies to address these challenges
+    
+    \item Visualization techniques that provide interpretable insights into how models learn to distinguish between instrument classes, revealing how architectural enhancements improve feature localization
 \end{itemize}
 
 The study also highlights the critical importance of incremental optimization and careful balance between model complexity and training stability. Our experience showed that simultaneous implementation of multiple optimization techniques can destabilize model training, while a methodical step-by-step approach leads to substantial performance gains.
 
-Future work could explore ensemble methods combining different architectural variants, knowledge distillation from the ResNet-18 model to more compact architectures, and deployment optimizations for real-time musical instrument classification in resource-constrained environments. Additionally, the systematic approach developed in this work can be extended to other domain-specific image classification tasks beyond musical instrument identification.
+This research demonstrates that with careful architectural design and systematic optimization, custom CNN models can approach the performance of transfer learning approaches even for challenging visual classification tasks. The optimization techniques we've identified—particularly selective attention mechanisms, residual connections, and graduated dropout strategies—offer valuable design principles that could be applied to other image classification domains beyond musical instrument identification.

@@ -88,13 +88,13 @@ For each variant, we are examining training dynamics, convergence speed, final a
 The final phase of our project focused on optimizing the Deeper CNN architecture, which was identified as the best-performing custom model from Phase 2. Based on the analysis of architecture performance, we developed a systematic optimization strategy with four main components:
 
 \begin{itemize}
-    \item \textbf{Enhanced Data Augmentation:} Implementation of stronger augmentation techniques including random erasing and random crops to improve model robustness.
+    \item \textbf{Enhanced Data Augmentation:} Implementation of class-specific augmentation targeting challenging instruments, with balanced transformation techniques to improve model robustness without degrading discriminative features.
     
-    \item \textbf{Architecture Refinements:} Fine-tuning the dropout strategy with progressive dropout rates, adding residual connections to improve gradient flow, and exploring channel attention mechanisms to focus on important features.
+    \item \textbf{Architecture Refinements:} Selective attention mechanisms applied only to deeper layers, fine-tuned graduated dropout strategy, and residual connections to improve gradient flow in the network.
     
-    \item \textbf{Training Strategy Optimization:} Implementation of the AdamW optimizer with optimized weight decay, OneCycle learning rate scheduling with appropriate warmup, and gradient clipping for training stability.
+    \item \textbf{Training Strategy Optimization:} Implementation of the AdamW optimizer with optimized weight decay, OneCycleLR learning rate scheduling with appropriate warmup, gradient clipping for training stability, and mixed precision training for computational efficiency.
     
-    \item \textbf{Experimental Techniques:} Exploration of label smoothing, longer training with early stopping, and hyperparameter optimization.
+    \item \textbf{Experimental Techniques:} Exploration of label smoothing, extended training with patient early stopping, and hyperparameter optimization.
 \end{itemize}
 
 The optimization strategy was implemented incrementally, with careful monitoring of validation performance to guide adjustments. Our approach was designed to systematically improve the Deeper CNN's performance while maintaining its architectural benefits.
@@ -105,9 +105,9 @@ For the architectural enhancements, we implemented:
 \begin{itemize}
     \item \textbf{Residual Connections:} Skip connections between convolutional blocks to improve gradient flow in the deep network, similar to those in ResNet but adapted to our custom architecture.
     
-    \item \textbf{Progressive Dropout:} A carefully tuned dropout pattern [0.1, 0.15, 0.2, 0.25, 0.3, 0.4] that gradually increases through the network, providing stronger regularization in deeper layers where overfitting is more likely.
+    \item \textbf{Graduated Dropout Strategy:} A carefully calibrated dropout pattern [0.05, 0.1, 0.15, 0.2, 0.25, 0.3] that gradually increases through the network, providing proportionate regularization that intensifies in deeper layers where overfitting is more likely.
     
-    \item \textbf{Channel Attention:} Optional attention mechanisms that allow the network to dynamically emphasize important feature channels based on their relevance to the classification task.
+    \item \textbf{Selective Attention Mechanism:} Attention mechanisms applied exclusively to deeper layers (layers 3 and beyond), allowing the network to focus computational resources on relevant high-level features while preserving general feature extraction in earlier layers.
 \end{itemize}
 
 \subsubsection{Advanced Training Configuration}
@@ -116,11 +116,24 @@ Our training configuration was optimized with:
 \begin{itemize}
     \item \textbf{AdamW Optimizer:} Used with a weight decay of 0.0005 for better regularization properties compared to standard Adam.
     
-    \item \textbf{OneCycle Learning Rate:} Implemented with a maximum learning rate of 0.003 and 30\% of training spent in the warmup phase, allowing faster convergence with stable training.
+    \item \textbf{OneCycleLR Scheduler:} Implemented with a maximum learning rate of 0.001 and 25\% of training spent in the warmup phase, allowing faster convergence with stable training.
     
     \item \textbf{Gradient Clipping:} Applied with a maximum norm of 2.0 to prevent exploding gradients and stabilize training.
     
-    \item \textbf{Extended Training:} Allowed up to 75 epochs with a patient early stopping mechanism to ensure convergence without overfitting.
+    \item \textbf{Mixed Precision Training:} Employed to accelerate computation by using half-precision (FP16) representations where appropriate, while maintaining full precision (FP32) for sensitive operations to ensure numerical stability.
+    
+    \item \textbf{Extended Training:} Allowed up to 100 epochs with a patient early stopping mechanism (25 epochs patience) to ensure convergence without overfitting.
 \end{itemize}
 
-The goal of Phase 3 was to push the performance boundaries of our custom CNN architecture for musical instrument classification, building upon the insights gained in Phase 2 while maintaining interpretability and efficiency.
+\subsubsection{Class-Specific Augmentation Strategy}
+Based on previous performance analysis, we identified several classes that consistently underperformed: Alphorn, Flute, Clarinet, Didgeridoo, and several others. For these challenging instruments, we implemented a specialized augmentation strategy:
+
+\begin{itemize}
+    \item \textbf{Targeted Transformations:} Applied stronger but controlled augmentations specifically to challenging classes while maintaining moderate augmentation for well-performing classes.
+    
+    \item \textbf{Balanced Approach:} Used less aggressive cropping (scale 0.8-1.0), moderate rotation (±15°), and controlled color jittering (0.2 brightness/contrast/saturation) to preserve critical instrument features while adding beneficial variation.
+    
+    \item \textbf{Dynamic Application:} Implemented a class-conditional transform system that dynamically applies the appropriate augmentation strategy based on the instrument class being processed.
+\end{itemize}
+
+This class-specific approach allowed us to address performance disparities across instrument categories without compromising the overall training effectiveness.
