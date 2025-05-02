@@ -191,31 +191,18 @@ def plot_comparison(results):
     summary_df['Test Accuracy'] = summary_df['Test Accuracy'].apply(lambda x: f"{x:.4f}")
     summary_df['F1 Score'] = summary_df['F1 Score'].apply(lambda x: f"{x:.4f}")
     summary_df['Training Time (minutes)'] = summary_df['Training Time (minutes)'].apply(lambda x: f"{x:.2f}")
-    
-    # Print the summary table
+      # Print the summary table
     print("\nModel Performance Comparison:")
     print(summary_df.to_string(index=False))
     
     plt.close(fig)
     
-    return summary_df
+    # Save results to plots_dir as well
     plots_dir = os.path.join(project_root, "results")
     os.makedirs(plots_dir, exist_ok=True)
     plt.savefig(os.path.join(plots_dir, "model_comparison.png"), dpi=300, bbox_inches="tight")
     
-    plt.show()
-    
-    # Print table of results
-    print("\nModel Comparison Results:")
-    comparison_table = df[["model_name", "test_accuracy", "f1_score", "training_time"]].copy()
-    comparison_table["training_time"] = comparison_table["training_time"] / 60  # Convert to minutes
-    comparison_table.columns = ["Model", "Test Accuracy", "F1 Score", "Training Time (min)"]
-    print(comparison_table.to_string(index=False))
-    
-    # Save results to CSV
-    comparison_table.to_csv(os.path.join(plots_dir, "model_comparison.csv"), index=False)
-    
-    return comparison_table
+    return summary_df
 
 def main():
     # Parse arguments

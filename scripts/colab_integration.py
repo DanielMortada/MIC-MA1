@@ -62,34 +62,3 @@ if __name__ == "__main__":
     print("device = check_gpu()       # Check for GPU availability")
     print("# Now use device in your training code to leverage GPU acceleration")
     print("```")
-
-def check_gpu():
-    """
-    Check for GPU availability and return device information.
-    
-    Returns:
-        device: PyTorch device (cuda or cpu)
-    """
-    # Check for GPU
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Using device: {device}")
-    
-    if device.type == "cuda":
-        print(f"GPU available: {torch.cuda.get_device_name(0)}")
-        print(f"Memory allocated: {torch.cuda.memory_allocated(0) / 1e9:.2f} GB")
-        print(f"Memory cached: {torch.cuda.memory_reserved(0) / 1e9:.2f} GB")
-    else:
-        print("No GPU detected, using CPU. Training will be slower.")
-    
-    return device
-
-if __name__ == "__main__":
-    # Example usage
-    print("This script is intended to be imported, not run directly.")
-    print("Example usage in a Colab notebook:")
-    print("```python")
-    print("from scripts.colab_integration import setup_colab_environment, check_gpu")
-    print("setup_colab_environment()  # Install dependencies")
-    print("device = check_gpu()       # Check for GPU availability")
-    print("# Now use device in your training code to leverage GPU acceleration")
-    print("```")
