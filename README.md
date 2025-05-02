@@ -1,4 +1,17 @@
-# Musical Instrument Classification (MIC)
+# PROJ-H419: Musical Instrument Classification (MIC)
+
+<p align="left">
+  <img src="https://polytech.ulb.be/medias/photo/logo-ulb-epb-fond-blanc_1559745003606-png?ID_FICHE=7972" alt="Gradient Banner" width="50%">
+</p>
+
+[![University](https://img.shields.io/badge/University-Universit%C3%A9%20Libre%20de%20Bruxelles-navy)](https://www.ulb.be/)
+[![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/)
+
+* **Author:** Daniel MORTADA - MA1, IRCI (AI)
+
+* **Supervisor:** Prof. Olivier DEBEIR
+
+**Last Updated:** May 2, 2025
 
 A computer vision project for multi-class classification of musical instruments using deep learning techniques.
 
