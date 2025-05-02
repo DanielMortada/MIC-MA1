@@ -5,49 +5,43 @@
 
 \section{Dataset and Experimental Setup}
 \subsection{Dataset Description}
-This study utilizes a comprehensive musical instrument image dataset obtained from Kaggle \cite{gpiosenka2021}. The dataset encompasses 30 distinct musical instrument classes, with images collected from internet searches for each instrument category. To ensure image quality and uniqueness, a duplicate image detector was employed to eliminate redundant samples. All images were standardized to dimensions of 224 × 224 × 3 RGB format and stored in JPG format.
+This study utilizes a musical instrument image dataset sourced from Kaggle \cite{gpiosenka2021}, which encompasses 30 distinct instrument classes. The images were initially collected via internet searches and subsequently curated using a duplicate image detection algorithm to ensure dataset integrity. For consistency, all images were standardized to the 224 × 224 × 3 RGB format and stored as JPG files.
 
-The dataset is organized into three partitions for each instrument class:
+The dataset is partitioned for each class as follows:
 \begin{itemize}
-    \item Training set: The majority of images for each class
-    \item Validation set: 5 images per class
-    \item Test set: 5 images per class
+    \item Training set: Comprising the majority of images.
+    \item Validation set: Containing 5 images per class.
+    \item Test set: Also containing 5 images per class.
 \end{itemize}
 
-This partitioning strategy allows for proper model training, hyperparameter tuning, and unbiased performance evaluation. The dataset presents several challenges characteristic of real-world image classification tasks:
+This partitioning strategy facilitates robust model training, effective hyperparameter tuning, and unbiased performance evaluation. Notably, the dataset presents several challenges characteristic of real-world image classification tasks, including:
 \begin{itemize}
-    \item Variability in instrument positioning, lighting conditions, and background
-    \item Presence of human players in some images, adding occlusion and complexity
-    \item Differences in instrument size, color, and manufacturing details
-    \item Limited training examples for some instrument classes
+    \item Significant variability in instrument positioning, lighting conditions, and background clutter.
+    \item The occasional presence of human players, introducing occlusion and additional complexity.
+    \item Inherent differences in instrument size, color, and manufacturing details across samples.
+    \item A limited number of training examples available for certain instrument classes.
 \end{itemize}
 
-% TODO: Insert figure showing sample images from different instrument classes
-% Figure 1: Sample images from the musical instrument dataset showing the variety
-% and challenges in the classification task.
+% TODO: Insert figure showing sample images
 
 \subsection{Data Preprocessing and Augmentation}
-To enhance model robustness and prevent overfitting, we applied several preprocessing and data augmentation techniques:
-
+To enhance model robustness and mitigate the risk of overfitting, several preprocessing and data augmentation techniques were applied during training:
 \begin{itemize}
-    \item Normalization: All images were normalized using ImageNet mean and standard deviation values (mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    \item Resizing: Images were resized to 224×224 pixels to match the input requirements of the models
-    \item Data Augmentation: During training, we applied a series of transformations including random horizontal flips, random rotations (±10°), color jittering, and slight random cropping
+    \item \textbf{Normalization:} All images were normalized using the standard ImageNet mean and standard deviation values (mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]).
+    \item \textbf{Resizing:} Images were uniformly resized to 224×224 pixels to ensure consistent input dimensions for the models.
+    \item \textbf{Augmentation:} A suite of transformations was applied, including random horizontal flips, random rotations (within ±10°), color jittering, and slight random cropping.
 \end{itemize}
 
-Data augmentation serves two primary purposes: expanding the effective size of the training set and improving the model's ability to generalize by exposing it to variations not present in the original dataset. This is particularly important for musical instrument classification, where the same instrument may appear in different orientations, lighting conditions, or with slight visual variations.
+Data augmentation serves the dual purpose of artificially expanding the effective size of the training dataset and improving the model's generalization capabilities by exposing it to plausible variations (e.g., differing orientations, lighting conditions) not explicitly present in the original data. This is particularly crucial for the task of musical instrument classification.
 
 \subsection{Experimental Setup}
-All experiments were conducted using PyTorch, a popular deep learning framework. Models were trained on hardware with GPU acceleration to reduce training time. The following experimental protocols were established for all phases of the project:
-
+All experiments were conducted utilizing the PyTorch deep learning framework, executed on hardware equipped with GPU acceleration to reduce computational time. Standardized experimental protocols were established and maintained across all phases:
 \begin{itemize}
-    \item Cross-entropy loss as the objective function
-    \item Adam optimizer with an initial learning rate of 0.001
-    \item Batch size of 32 for all training runs
-    \item Early stopping based on validation accuracy with patience of 10 epochs
-    \item Accuracy as the primary evaluation metric
+    \item \textbf{Loss Function:} Cross-entropy loss was employed as the objective function.
+    \item \textbf{Optimizer:} The Adam optimizer was used with an initial learning rate set to 0.001.
+    \item \textbf{Batch Size:} A consistent batch size of 32 was used for all training runs.
+    \item \textbf{Early Stopping:} Training was regulated using an early stopping mechanism based on validation accuracy, with a patience of 10 epochs.
+    \item \textbf{Primary Metric:} Accuracy served as the primary metric for performance evaluation.
 \end{itemize}
 
-For the baseline ResNet-18 model, we employed transfer learning by initializing with weights pre-trained on ImageNet. For all custom CNN models, weights were initialized randomly following He initialization \cite{he2015delving}.
-
-To ensure fair comparison between models across all phases, we maintained consistent preprocessing, optimization parameters, and evaluation procedures across all experiments. This consistency is particularly important for Phase 2, where multiple architecture variants are being compared systematically.
+For the baseline ResNet-18 model, transfer learning was employed by initializing the network with weights pre-trained on ImageNet. Conversely, all custom CNN models were initialized with random weights following the He initialization scheme \cite{he2015delving}. Maintaining consistent preprocessing, optimization parameters, and evaluation procedures across all experimental phases was paramount to ensure fair and reliable comparisons, particularly during the architectural variant analysis in Phase 2.

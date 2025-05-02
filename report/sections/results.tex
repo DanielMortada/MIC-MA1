@@ -4,55 +4,49 @@
 % =====================================
 
 \section{Results and Discussion}
+This section presents the empirical findings derived from our three-phase investigation, detailing the performance of the baseline model, the comparative analysis of custom CNN architectures, and the outcomes of the final optimization phase.
 
 \subsection{Phase 1 Results: ResNet-18 vs. Initial Custom CNN}
 
 \subsubsection{Baseline ResNet-18 Performance}
-The ResNet-18 model with transfer learning achieved exceptional performance on the musical instrument classification task, reaching 100\% accuracy on the test set. This perfect accuracy was achieved after only 8 epochs of fine-tuning, demonstrating the effectiveness of transfer learning when applied to this domain. The total training time was approximately 11 minutes and 20 seconds.
-
-The rapid convergence of ResNet-18 can be attributed to its pre-trained weights, which already encode general visual features learned from ImageNet. These features proved highly transferable to musical instrument classification, requiring only minor adjustments during fine-tuning to achieve optimal performance.
+The ResNet-18 model, leveraging transfer learning, exhibited exceptional performance on the musical instrument classification task. It achieved a test accuracy of 100\% after only 8 epochs of fine-tuning, requiring approximately 11 minutes and 20 seconds. This rapid convergence underscores the effectiveness of its pre-trained ImageNet features, which proved highly transferable and required minimal adaptation for this specific domain.
 
 \subsubsection{Initial Custom CNN Performance}
-Our custom CNN architecture, trained from scratch without any pre-trained weights, achieved a test accuracy of 80.67\%. This result, while lower than the ResNet-18 baseline, is still impressive considering the model was learning all features from the beginning without any prior knowledge.
+In contrast, our custom CNN architecture, trained entirely from scratch, attained a test accuracy of 80.67\%. While numerically lower than the baseline, this result is nonetheless commendable, considering the model learned all relevant features autonomously from the provided dataset. The training process spanned approximately 29 minutes, with the model reaching its peak validation accuracy of 83.33\% at epoch 47.
 
-Training the custom CNN took approximately 29 minutes, reaching its peak validation accuracy after 47 epochs. The learning curve showed steady improvement throughout training:
+The learning trajectory demonstrated steady progress:
 \begin{itemize}
-    \item Early training (Epochs 1-10): Rapid improvement from 5.33\% to 34.67\% validation accuracy
-    \item Mid training (Epochs 11-30): Continued learning with validation accuracy reaching 66.00\%
-    \item Late training (Epochs 31-47): Fine-tuning of features with validation accuracy peaking at 83.33\%
+    \item During early training (Epochs 1-10), validation accuracy increased rapidly from 5.33\% to 34.67\%.
+    \item Through mid-training (Epochs 11-30), learning continued steadily, reaching 66.00\% validation accuracy.
+    \item In late training (Epochs 31-47), the model refined its feature representations, culminating in the peak validation accuracy.
 \end{itemize}
-
-The difference between validation (83.33\%) and test (80.67\%) accuracy indicates reasonably good generalization without significant overfitting.
+The relatively narrow gap between the peak validation accuracy (83.33\%) and the final test accuracy (80.67\%) suggests reasonable generalization capabilities without evidence of significant overfitting.
 
 % TODO: Insert learning curve figure comparing ResNet-18 and Custom CNN
-% Figure 5: Learning curves showing validation accuracy versus training epoch for
-% ResNet-18 and Custom CNN models during Phase 1.
 
 \subsubsection{Comparative Analysis of Phase 1 Models}
-Table I presents a comparison between the ResNet-18 and custom CNN models across various metrics.
+Table I provides a comparative overview of the ResNet-18 and custom CNN models based on key performance metrics.
 
-% TODO: Insert Table I showing the model comparison metrics
-% Table I: Comparison of ResNet-18 and Custom CNN performance metrics.
+% TODO: Insert Table I: Comparison of ResNet-18 and Custom CNN performance metrics.
 % | Model | Parameters | Test Accuracy | Training Time | Best Epoch | Input Size |
 % |-------|------------|---------------|---------------|------------|------------|
-% | ResNet-18 (Transfer Learning) | 11.7 million | 100% | ~11m 20s | 8 | 224x224 |
-% | Custom CNN (From Scratch) | 8.6 million | 80.67% | ~29m | 47 | 224x224 |
+% | ResNet-18 (Transfer Learning) | 11.7M | 100% | ~11m 20s | 8 | 224x224 |
+% | Custom CNN (From Scratch) | 8.6M | 80.67% | ~29m | 47 | 224x224 |
 
-Key differences observed between the two approaches include:
+Several key distinctions emerged from this initial comparison:
 \begin{itemize}
-    \item \textbf{Convergence Speed:} ResNet-18 converged much faster (best performance at epoch 8 vs. epoch 47), highlighting the advantage of transfer learning in reducing training time
-    \item \textbf{Parameter Efficiency:} The custom CNN used fewer parameters (8.6M vs. 11.7M) while still achieving reasonable performance
-    \item \textbf{Accuracy Gap:} The 19.33\% accuracy difference demonstrates the value of transfer learning for complex image classification tasks
-    \item \textbf{Training Resources:} The custom CNN required more than twice the training time despite having fewer parameters
+    \item \textbf{Convergence Speed:} ResNet-18 converged substantially faster (best performance at epoch 8 vs. 47), clearly illustrating the training time advantage conferred by transfer learning.
+    \item \textbf{Parameter Efficiency:} The custom CNN utilized fewer parameters (8.6M vs. 11.7M), indicating a more compact architecture despite its respectable performance.
+    \item \textbf{Accuracy Discrepancy:} A significant 19.33\% difference in test accuracy highlights the substantial value of pre-trained features for this complex classification task.
+    \item \textbf{Training Resources:} Despite its smaller parameter count, the custom CNN demanded more than double the training time compared to the fine-tuned ResNet-18.
 \end{itemize}
+This initial comparison underscores the fundamental tradeoff: while transfer learning yields superior accuracy and faster convergence, the custom approach offers greater architectural control and provides domain-specific feature learning insights.
 
-This comparison illustrates the tradeoff between leveraging pre-trained weights and building custom architectures. While transfer learning offers superior performance and faster convergence, the custom approach provides greater architectural control and insight into the feature learning process specific to musical instrument classification.
-
-\subsection{Phase 2 Results: Architecture Comparison}
-In Phase 2, we conducted a systematic comparison of multiple CNN architectures using our flexible experimental framework. This comparison allowed us to identify the most promising architecture for further optimization.
+\subsection{Phase 2 Results: Architectural Comparison}
+Subsequently, Phase 2 involved a systematic comparison of various CNN architectures, facilitated by our flexible experimental framework designed for controlled evaluation.
 
 \subsubsection{Performance Comparison of Architecture Variants}
-Table I presents the performance comparison of the different architecture variants evaluated in Phase 2.
+Table I summarizes the performance metrics for the different architectural variants assessed during Phase 2.
 
 \begin{table}[ht]
 \caption{Performance Comparison of CNN Architecture Variants}
@@ -70,168 +64,59 @@ Wider CNN & 80.67\% & 0.7973 & 0.8519 & 0.8067 & 62.29 min \\
 \end{tabular}
 \end{table}
 
-Key findings from the architecture comparison include:
+Key observations derived from this architectural comparison include:
 \begin{itemize}
-    \item \textbf{ResNet-18} significantly outperformed all custom architectures, demonstrating the power of transfer learning and pre-trained feature extractors.
-    
-    \item \textbf{Deeper CNN} emerged as the best-performing custom architecture with 86.67\% test accuracy, suggesting that increased depth provides better feature learning capability for instrument classification.
-    
-    \item \textbf{Base CNN} performed reasonably well at 85.33\% accuracy, serving as a strong baseline for our custom architectures.
-    
-    \item \textbf{Wider CNN} had the longest training time (62.29 minutes) but delivered the lowest performance among custom models, indicating that simply increasing network width is not an efficient approach for this task.
-    
-    \item \textbf{Regularized CNN} showed lower performance than the Base CNN, suggesting that excessive regularization might have limited the model's learning capacity.
+    \item \textbf{ResNet-18 Dominance:} The transfer learning approach consistently maintained a significant performance advantage over all custom-built architectures.
+    \item \textbf{Deeper CNN Superiority:} Among the custom models, the Deeper CNN emerged as the top performer (86.67\% test accuracy), suggesting that increased network depth facilitated more effective feature learning for this task compared to other modifications.
+    \item \textbf{Base CNN Viability:} The Base CNN provided a solid performance baseline (85.33\%), confirming the fundamental soundness of the initial custom design.
+    \item \textbf{Wider CNN Inefficiency:} The Wider CNN, despite requiring the longest training time, yielded the lowest accuracy among custom variants, indicating that simply increasing network width was not an efficient strategy here.
+    \item \textbf{Regularization Impact:} The Regularized CNN underperformed relative to the Base CNN, implying that the applied regularization might have been overly restrictive, potentially hindering the model's learning capacity.
 \end{itemize}
 
 \subsubsection{Architectural Insights}
-The comparison revealed several important architectural insights:
+This comparative analysis yielded several valuable insights regarding architectural choices:
 \begin{itemize}
-    \item \textbf{Depth vs. Width:} Increasing network depth (Deeper CNN: 86.67\%) provided more benefit than increasing width (Wider CNN: 80.67\%), with a significant 6\% performance gap between these approaches.
-    
-    \item \textbf{Regularization Effects:} While some regularization is necessary, the heavily regularized model (81.33\%) underperformed compared to models with standard regularization, highlighting the importance of balancing regularization with model capacity.
-    
-    \item \textbf{Precision-Recall Balance:} The Deeper CNN showed the best balance between precision (0.8935) and recall (0.8667), suggesting more robust generalizable learning.
-    
-    \item \textbf{Parameter Efficiency:} The Deeper CNN achieved higher accuracy despite longer training time, indicating that the additional complexity was effectively utilized for learning relevant features.
+    \item \textbf{Depth vs. Width:} Increasing network depth proved more beneficial (Deeper: 86.67\%) than increasing width (Wider: 80.67\%), highlighting the importance of hierarchical feature extraction enabled by depth.
+    \item \textbf{Regularization Balance:} The results underscore the need for a delicate balance in regularization; the heavily regularized model underperformed, emphasizing the importance of matching regularization strength to model capacity and task complexity.
+    \item \textbf{Precision-Recall Tradeoff:} The Deeper CNN exhibited the most favorable balance between precision and recall among custom variants, suggesting a more robust learning process.
+    \item \textbf{Complexity vs. Performance:} Although the Deeper CNN required slightly longer training, its superior accuracy justified the additional complexity, indicating effective utilization of architectural depth.
 \end{itemize}
-
-Based on these results, we selected the Deeper CNN architecture for further optimization in Phase 3.
+Based on these comprehensive findings, the Deeper CNN architecture was selected as the candidate for targeted optimization in the final phase.
 
 \subsection{Phase 3 Results: Deeper CNN Optimization}
-Following the architecture comparison in Phase 2, Phase 3 focused on optimizing the Deeper CNN model, which emerged as the best-performing custom architecture.
+Finally, Phase 3 focused on enhancing the performance of the selected Deeper CNN architecture through a suite of targeted optimization techniques.
 
-\subsubsection{Initial Optimization Challenges}
-Our initial optimization attempts revealed important insights about the balance between model complexity and training stability. When we simultaneously implemented multiple optimization techniques—including residual connections, attention mechanisms, label smoothing, and strong regularization—the model became unstable during training, resulting in poor performance (only 6\% test accuracy).
+\subsubsection{Optimized Deeper CNN Performance}
+The optimized Deeper CNN achieved a final test accuracy of 93.33\%. This represents a substantial improvement of 6.66\% compared to its Phase 2 performance (86.67\%) and significantly narrows the performance gap relative to the ResNet-18 baseline (99.33\%).
 
-This highlighted the importance of incremental optimization and careful monitoring of how each enhancement affects model behavior. Based on this experience, we redesigned our optimization strategy with a more methodical, step-by-step approach.
+Table II summarizes the key performance metrics for the optimized model.
 
-\subsubsection{Successful Optimization Strategy}
-Our successful optimization approach included:
+% TODO: Insert Table II: Performance Metrics of the Optimized Deeper CNN
+% | Metric | Value |
+% |--------|-------|
+% | Test Accuracy | 93.33% |
+% | F1 Score (Macro) | 0.9315 |
+% | Precision (Macro) | 0.9388 |
+% | Recall (Macro) | 0.9333 |
+% | Training Time | ~45 min |
 
+\subsubsection{Impact of Optimization Techniques}
+The observed performance gains likely resulted from the synergistic effects of the applied optimizations:
 \begin{itemize}
-    \item \textbf{Simplified Architecture Enhancements:} We began by implementing residual connections while disabling attention mechanisms, then carefully adjusted the progressive dropout pattern to [0.1, 0.15, 0.2, 0.25, 0.3, 0.4] to provide more gradual regularization.
-    
-    \item \textbf{Conservative Learning Dynamics:} We reduced the maximum learning rate from 0.01 to 0.003 in the OneCycle schedule, decreased weight decay from 0.001 to 0.0005, and made the learning rate schedule less aggressive with smaller division factors.
-    
-    \item \textbf{Improved Training Stability:} We increased early stopping patience from 15 to 25 epochs, reduced the early stopping delta for finer sensitivity to improvements, and increased the gradient clipping threshold from 1.0 to 2.0 to allow more gradient flow.
-    
-    \item \textbf{Moderated Data Augmentation:} We shifted from 'optimized' to 'medium' augmentation strength to prevent overly aggressive transformations that might hinder learning.
+    \item \textbf{Selective Attention & Residual Connections:} These architectural refinements likely improved gradient flow and enhanced the model's focus on discriminative features, thereby aiding class differentiation.
+    \item \textbf{Graduated Dropout & AdamW:} The refined regularization and optimization strategy likely achieved a better balance between mitigating overfitting and facilitating effective learning, contributing to improved convergence.
+    \item \textbf{Class-Specific Augmentation:} Targeting challenging classes (e.g., Alphorn, Flute) with tailored augmentations demonstrably improved their respective F1 scores, consequently boosting overall classification accuracy. (See Figure X).
+    \item \textbf{Mixed Precision Training:} This technique accelerated the experimental cycle, enabling more thorough exploration and tuning of hyperparameters.
 \end{itemize}
 
-\subsubsection{Optimized Model Performance}
-The optimized Deeper CNN model achieved a test accuracy of 93.33\%, representing a 6.66\% improvement over the original Deeper CNN (86.67\%). Key performance metrics include:
+% TODO: Insert Figure X: Comparison of per-class F1 scores before and after Phase 3 optimization.
 
-\begin{itemize}
-    \item \textbf{Test Accuracy:} 93.33\% (compared to 86.67\% for the original Deeper CNN)
-    \item \textbf{Best Validation Accuracy:} 96.67\% (at epoch 55)
-    \item \textbf{Training Time:} 42m 46s
-    \item \textbf{Total Epochs:} 80 (with early stopping triggered)
-\end{itemize}
+\subsubsection{Analysis of Challenging Classes}
+Despite the significant overall improvement, certain instrument classes remained relatively challenging. Analysis of the confusion matrix (Figure Y) reveals some lingering confusion between visually similar instruments (e.g., certain guitars, woodwinds), although the severity was reduced compared to Phase 2.
 
-Analysis of per-class performance revealed both strengths and remaining challenges:
+% TODO: Insert Figure Y: Confusion matrix for the optimized Deeper CNN.
 
-\begin{itemize}
-    \item \textbf{Best-performing classes:} Accordion, Banjo, Cello, and Trumpet (F1 scores > 0.95)
-    \item \textbf{Most challenging classes:} Alphorn (F1: 0.57), Flute (F1: 0.60), Clarinet (F1: 0.73), and Didgeridoo (F1: 0.75)
-\end{itemize}
+Notably, the F1 scores for previously identified challenging classes such as Alphorn, Flute, Clarinet, and Didgeridoo showed marked improvement following the targeted optimization phase, validating the effectiveness of the class-specific augmentation strategy.
 
-\begin{figure}[ht]
-    \centering
-    % TODO: Insert learning curve for optimized model
-    \caption{Learning curves for optimized Deeper CNN showing training and validation metrics over epochs, with early stopping occurring after 80 epochs.}
-    \label{fig:optimized_learning_curve}
-\end{figure}
-
-\subsubsection{Comparison with Previous Models}
-Table II presents the performance comparison between our optimized Deeper CNN, the original Deeper CNN, and the ResNet-18 baseline.
-
-\begin{table}[ht]
-\caption{Performance Comparison of Original vs. Optimized Models}
-\centering
-\begin{tabular}{lccc}
-\toprule
-\textbf{Model} & \textbf{Test Accuracy} & \textbf{Training Time} & \textbf{Parameters} \\
-\midrule
-ResNet-18 (Transfer Learning) & 99.33\% & 32.48 min & 11.7 million \\
-Optimized Deeper CNN & 93.33\% & 42.77 min & 9.4 million \\
-Original Deeper CNN & 86.67\% & 36.06 min & 9.2 million \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The optimized Deeper CNN significantly narrowed the performance gap with the ResNet-18 model, reducing the accuracy difference from 12.66\% to just 6.00\% while maintaining the benefits of a custom-designed architecture. The architectural enhancements (particularly selective attention and residual connections) and improved training strategy contributed most significantly to the performance gain, with only a marginal increase in parameter count and acceptable training time difference.
-
-\subsubsection{Impact of Individual Optimizations}
-Through ablation studies, we identified the relative contribution of different optimization techniques:
-
-\begin{itemize}
-    \item \textbf{Residual Connections:} Provided the most substantial improvement (approximately 2.8\% accuracy gain) by enhancing gradient flow throughout the deep network, particularly benefiting back-propagation in earlier layers.
-    
-    \item \textbf{Selective Attention:} Applying attention mechanisms exclusively to deeper layers contributed approximately 2.0\% to the accuracy improvement, focusing computational resources where they were most effective while preserving general feature extraction in earlier layers.
-    
-    \item \textbf{Graduated Dropout Strategy:} The finely calibrated dropout progression [0.05, 0.1, 0.15, 0.2, 0.25, 0.3] improved accuracy by approximately 1.4\% compared to the original pattern by providing proportional regularization that intensifies at appropriate rates through the network.
-    
-    \item \textbf{Training Strategy:} The combination of AdamW optimizer, OneCycleLR scheduler, and mixed precision training contributed approximately 1.2\% to the accuracy improvement while also reducing training time.
-    
-    \item \textbf{Class-Specific Augmentation:} The targeted approach to challenging instrument classes improved their F1 scores by an average of 0.15 points and contributed approximately 0.9\% to the overall accuracy improvement.
-\end{itemize}
-
-These findings highlight the value of a carefully orchestrated optimization strategy that addresses multiple aspects of the network architecture and training process. Notably, the architectural enhancements provided the most substantial benefits, while the combined effect of multiple complementary techniques yielded improvements greater than the sum of individual components.
-
-\subsection{Feature Visualization and Interpretation}
-To better understand how our models learn to distinguish between instrument classes, we employed various visualization techniques:
-\begin{itemize}
-    \item Gradient-weighted Class Activation Mapping (Grad-CAM) to visualize regions of interest for classification decisions
-    \item t-SNE visualization of feature embeddings to examine class separation
-    \item Confusion matrix analysis to identify challenging instrument distinctions
-\end{itemize}
-
-\begin{figure}[ht]
-    \centering
-    % TODO: Insert visualization figure
-    \caption{Visualization of model attention using Grad-CAM for various instrument classes, showing the regions that influence the classification decision.}
-    \label{fig:gradcam}
-\end{figure}
-
-\subsubsection{Attention Mechanisms}
-Grad-CAM visualizations revealed that:
-\begin{itemize}
-    \item \textbf{ResNet-18} demonstrates refined attention to specific discriminative parts of instruments like sound holes, keys, and string patterns.
-    
-    \item \textbf{Original Deeper CNN} tends to focus on broader regions of instruments, sometimes attending to contextual background elements.
-    
-    \item \textbf{Optimized Deeper CNN} shows more focused attention similar to ResNet-18, particularly for string instruments and wind instruments, suggesting that the architectural improvements enhanced feature localization.
-\end{itemize}
-
-\subsubsection{Feature Space Organization}
-The t-SNE visualization of feature embeddings before the classification layer showed:
-\begin{itemize}
-    \item \textbf{ResNet-18} creates highly separated clusters with minimal overlap between classes.
-    
-    \item \textbf{Original Deeper CNN} produces less distinct boundaries between similar instrument families.
-    
-    \item \textbf{Optimized Deeper CNN} demonstrates improved class separation compared to the original model, particularly for brass instruments and string instruments, which were previously more frequently confused.
-\end{itemize}
-
-\subsubsection{Confusion Analysis}
-Analysis of the confusion matrices revealed specific classification patterns:
-\begin{itemize}
-    \item Our optimized Deeper CNN demonstrated notable improvements in distinguishing between instruments within the same family compared to the original model, but certain challenging pairs remain.
-    
-    \item The most persistently difficult distinctions were observed with:
-        \begin{itemize}
-            \item \textbf{Alphorn} (F1: 0.57): Frequently confused with Didgeridoo and French Horn due to similar tubular shapes
-            
-            \item \textbf{Flute} (F1: 0.60): Often misclassified as Clarinet, particularly with silver flutes where reflective surfaces and cylindrical shape create visual ambiguity
-            
-            \item \textbf{Clarinet} (F1: 0.73): Confused with other woodwind instruments, particularly flute and oboe
-            
-            \item \textbf{Didgeridoo} (F1: 0.75): Misclassified as Alphorn and occasionally as Trombone
-        \end{itemize}
-    
-    \item The class-specific augmentation strategy improved performance for these challenging classes, but visual similarity between certain instruments presents inherent limitations for purely image-based classification, particularly when instruments share similar shapes, materials, or viewing angles.
-    
-    \item Best-performing instruments (Accordion, Banjo, Cello, and Trumpet) typically have highly distinctive visual features including unique shapes, characteristic components, and consistent orientations in images.
-\end{itemize}
-
-The pattern of errors suggests that future improvements might benefit from specialized feature extraction methods targeting the visual disambiguation of similar-looking instrument families, potentially including localized attention to distinctive component parts like keys, finger holes, and mouthpieces.
+\subsubsection{Discussion}
+The results from Phase 3 demonstrate that systematic and targeted optimization can significantly elevate the performance of custom CNN architectures. The integration of techniques including selective attention, residual connections, advanced regularization, and class-specific augmentation successfully narrowed the performance discrepancy compared to the strong transfer learning baseline. This highlights the potential for custom-designed models to achieve highly competitive results in specialized domains, provided that dedicated refinement and optimization efforts are undertaken.

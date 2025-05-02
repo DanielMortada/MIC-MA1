@@ -1,25 +1,20 @@
 % Conclusion Section
 \section{Conclusion}
-This paper presented a comprehensive three-phase approach to musical instrument classification using convolutional neural networks. In Phase 1, we compared transfer learning with a pre-trained ResNet-18 model against a custom CNN architecture developed from scratch. Our findings demonstrated that while transfer learning offers superior performance (99.33\% test accuracy) and faster convergence, custom architectures provide valuable insights into the feature learning process and reasonable performance (80.67\% test accuracy) with fewer parameters.
+This paper presented a comprehensive three-phase investigation into musical instrument classification using CNNs. Phase 1 contrasted a ResNet-18 transfer learning baseline (99.33\% test accuracy) with a custom CNN (80.67\% accuracy). While transfer learning offered superior performance and faster convergence, the custom model provided domain-specific insights and a compact footprint.
 
-In Phase 2, we systematically compared multiple architectural variants using a flexible experimental framework. This comparison revealed that the Deeper CNN architecture (86.67\% test accuracy) outperformed other custom variants including Base CNN (85.33\%), Regularized CNN (81.33\%), and Wider CNN (80.67\%). These results demonstrated that increased depth provides more benefit than increased width for musical instrument classification, while highlighting the importance of balancing regularization with model capacity.
+Phase 2 systematically compared architectural variants using a flexible framework. The Deeper CNN (86.67\% accuracy) outperformed Base (85.33\%), Regularized (81.33\%), and Wider (80.67\%) variants, suggesting depth was more beneficial than width for this task and highlighting the need for balanced regularization.
 
-Phase 3 focused on optimizing the Deeper CNN architecture through a methodical enhancement process. We implemented selective attention mechanisms applied exclusively to deeper layers, residual connections, a finely calibrated graduated dropout strategy [0.05, 0.1, 0.15, 0.2, 0.25, 0.3], class-specific augmentation targeting challenging instruments, and mixed precision training. These optimizations yielded significant improvements, with the optimized model achieving 93.33\% test accuracy—a 6.66\% improvement over the original Deeper CNN and substantially closing the gap with the transfer learning approach to just 6.00\%.
+Phase 3 meticulously optimized the Deeper CNN by integrating selective attention, residual connections, graduated dropout, class-specific augmentation, and mixed precision training. These combined enhancements yielded a final test accuracy of 93.33\%, a significant 6.66\% improvement over its Phase 2 performance, narrowing the gap with the ResNet-18 baseline to 6.00\%.
 
-Our work provides several important contributions to the understanding of deep learning approaches for specialized image classification tasks:
-
+Collectively, our work offers several key contributions:
 \begin{itemize}
-    \item A systematic methodology for developing, comparing, and optimizing custom CNN architectures for domain-specific tasks, including techniques for addressing class-specific performance disparities
-    
-    \item Empirical evidence on the effectiveness of selective attention mechanisms applied only to deeper network layers, demonstrating how focused architectural enhancements can yield targeted improvements without unnecessary computational overhead
-    
-    \item Insights into the relative importance of architectural components for musical instrument classification, with depth proving more valuable than width, and properly calibrated graduated dropout outperforming uniform regularization
-    
-    \item Identification of inherently challenging instrument classifications (Alphorn, Flute, Clarinet, Didgeridoo) and development of targeted strategies to address these challenges
-    
-    \item Visualization techniques that provide interpretable insights into how models learn to distinguish between instrument classes, revealing how architectural enhancements improve feature localization
+    \item A systematic methodology for developing, comparing, and optimizing custom CNNs for specialized tasks, including strategies for class imbalance.
+    \item Empirical support for applying selective attention primarily to deeper layers for targeted improvements without excessive computational cost.
+    \item Insights into architectural component importance for this task: depth proved more advantageous than width, and graduated dropout outperformed uniform regularization.
+    \item Identification of challenging classes (e.g., Alphorn, Flute) and validation of targeted augmentation strategies to mitigate difficulties.
+    \item Interpretable insights via visualization into how architectural enhancements improve feature discrimination.
 \end{itemize}
 
-The study also highlights the critical importance of incremental optimization and careful balance between model complexity and training stability. Our experience showed that simultaneous implementation of multiple optimization techniques can destabilize model training, while a methodical step-by-step approach leads to substantial performance gains.
+The study underscores the value of incremental optimization, as attempting multiple complex changes simultaneously could destabilize training, whereas methodical refinement yielded substantial gains.
 
-This research demonstrates that with careful architectural design and systematic optimization, custom CNN models can approach the performance of transfer learning approaches even for challenging visual classification tasks. The optimization techniques we've identified—particularly selective attention mechanisms, residual connections, and graduated dropout strategies—offer valuable design principles that could be applied to other image classification domains beyond musical instrument identification.
+In conclusion, this research demonstrates that diligent design and systematic optimization can enable custom CNNs to approach transfer learning performance on challenging visual tasks. The validated techniques—particularly selective attention, residual connections, and graduated dropout—offer valuable design principles applicable to other image classification domains.
