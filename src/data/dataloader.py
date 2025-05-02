@@ -23,8 +23,7 @@ def load_datasets(data_dir, transforms, batch_size=32, num_workers=0, pin_memory
     train_dir = os.path.join(data_dir, "train")
     valid_dir = os.path.join(data_dir, "valid")
     test_dir = os.path.join(data_dir, "test")
-    
-    # Verify data paths
+      # Verify data paths
     for dir_path, dir_name in [(train_dir, "Training"), (valid_dir, "Validation"), (test_dir, "Test")]:
         if not os.path.exists(dir_path):
             raise FileNotFoundError(f"{dir_name} data directory not found: {dir_path}")
@@ -32,7 +31,7 @@ def load_datasets(data_dir, transforms, batch_size=32, num_workers=0, pin_memory
     # Load datasets
     train_dataset = ImageFolder(train_dir, transform=transforms['train'])
     valid_dataset = ImageFolder(valid_dir, transform=transforms['val'])
-    test_dataset = ImageFolder(test_dir, transform=transforms['test'])
+    test_dataset = ImageFolder(test_dir, transform=transforms.get('test', transforms['val']))
     
     # Create data loaders
     train_loader = DataLoader(

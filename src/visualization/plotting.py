@@ -16,7 +16,11 @@ def plot_training_history(history: Dict[str, List[float]]) -> None:
     """
     epochs = range(1, len(history['train_loss']) + 1)
     
-    # Create a 2x2 grid of plots
+    # Determine subplot layout based on available data
+    has_lr = 'lr' in history
+    subplot_count = 3 if has_lr else 2
+    
+    # Create a subplot grid
     plt.figure(figsize=(16, 10))
     
     # Plot training & validation loss
@@ -39,22 +43,23 @@ def plot_training_history(history: Dict[str, List[float]]) -> None:
     plt.legend()
     plt.grid(True)
     
-    # Plot learning rate
-    plt.subplot(2, 2, 3)
-    plt.plot(epochs, history['lr'], 'g-')
-    plt.title('Learning Rate')
-    plt.xlabel('Epochs')
-    plt.ylabel('Learning Rate')
-    plt.grid(True)
-    
-    # Plot validation accuracy vs. learning rate
-    plt.subplot(2, 2, 4)
-    plt.scatter(history['lr'], history['val_acc'], alpha=0.7)
-    plt.title('Validation Accuracy vs. Learning Rate')
-    plt.xlabel('Learning Rate')
-    plt.ylabel('Validation Accuracy')
-    plt.xscale('log')
-    plt.grid(True)
+    # Plot learning rate if available
+    if has_lr:
+        plt.subplot(2, 2, 3)
+        plt.plot(epochs, history['lr'], 'g-')
+        plt.title('Learning Rate')
+        plt.xlabel('Epochs')
+        plt.ylabel('Learning Rate')
+        plt.grid(True)
+        
+        # Plot validation accuracy vs. learning rate
+        plt.subplot(2, 2, 4)
+        plt.scatter(history['lr'], history['val_acc'], alpha=0.7)
+        plt.title('Validation Accuracy vs. Learning Rate')
+        plt.xlabel('Learning Rate')
+        plt.ylabel('Validation Accuracy')
+        plt.xscale('log')
+        plt.grid(True)
     
     plt.tight_layout()
     plt.show()

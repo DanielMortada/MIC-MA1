@@ -119,7 +119,8 @@ class FlexibleCNN(nn.Module):
                 layers.append(nn.ELU(inplace=True))
             else:
                 layers.append(nn.ReLU(inplace=True))
-              # Pooling layer
+              
+            # Pooling layer
             if self.pooling_type == 'max':
                 layers.append(nn.MaxPool2d(self.pool_size))
             else:  # 'avg'

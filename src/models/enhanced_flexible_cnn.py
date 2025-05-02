@@ -96,8 +96,7 @@ class EnhancedFlexibleCNN(nn.Module):
             if dropout[0] > 0:
                 block.append(nn.Dropout2d(dropout[0]))
             self.conv_blocks.append(nn.Sequential(*block))
-        
-        # Add attention module after first block if specified
+          # Add attention module after first block if specified
         if use_attention and not use_residual and 0 % 2 == 1:
             self.conv_blocks.append(ChannelAttention(conv_layers[0]))
         
@@ -150,10 +149,14 @@ class EnhancedFlexibleCNN(nn.Module):
             fc_block = []
             fc_block.append(nn.Linear(fc_layers[i-1], fc_layers[i]))
             fc_block.append(self.activation)
-            if len(dropout) > len(conv_layers) + i:
-                dropout_rate = dropout[len(conv_layers) + i]
+            
+            # Calculate dropout index once
+            dropout_idx = len(conv_layers) + i
+            if len(dropout) > dropout_idx:
+                dropout_rate = dropout[dropout_idx]
                 if dropout_rate > 0:
                     fc_block.append(nn.Dropout(dropout_rate))
+            
             self.fc_blocks.append(nn.Sequential(*fc_block))
         
         # Final classification layer
