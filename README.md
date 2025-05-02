@@ -14,6 +14,7 @@ This project implements and evaluates deep learning models for classifying image
 - Modular, reusable codebase structure
 - Experiment tracking and reproducible configurations
 - Performance evaluation with detailed metrics and visualizations
+- Advanced model architectures with attention mechanisms and residual connections
 
 ## Project Structure
 
@@ -21,13 +22,19 @@ This project implements and evaluates deep learning models for classifying image
 proj-h419-MIC/
 ├── config/                  # Configuration files for experiments
 │   ├── baseline_resnet18.yaml
+│   ├── custom_cnn_base.yaml
+│   ├── custom_cnn_deeper.yaml
+│   ├── custom_cnn_regularized.yaml
+│   ├── custom_cnn_wider.yaml
 │   ├── custom_model_v1.yaml
 │   ├── flexible_framework.yaml
-│   └── optimized_custom_cnn.yaml
+│   ├── optimized_custom_cnn.yaml
+│   ├── optimized_deeper_cnn.yaml
+│   └── resnet18_baseline.yaml
 ├── data/                    # Dataset directory
 │   ├── processed/           # Processed dataset
 │   └── raw/                 # Raw dataset with 30 Musical Instruments
-├── diagrams/               # Project architecture and pipeline diagrams
+├── diagrams/                # Project architecture and pipeline diagrams
 │   └── TrainingPipeline.mermaid
 ├── docs/                    # Documentation and learning resources
 │   ├── cnn_optimization_strategies.md
@@ -36,28 +43,51 @@ proj-h419-MIC/
 │   ├── model_architecture_comparison.md
 │   ├── pipeline.md
 │   └── training_and_eval_basics.md
-├── experiments/             # Experiment results and saved models
-├── notebooks/              # Jupyter notebooks for exploration and visualization
+├── notebooks/               # Jupyter notebooks for exploration and visualization
 │   ├── 1-Dataset Acquisition and Exploration.ipynb
-│   ├── 2-Baseline_ResNet18.ipynb
-│   ├── 3-Model_From_Scratch_v1.ipynb
-│   ├── 4-Flexible_Model_Framework.ipynb
-│   ├── 5-Custom_Model_Optimization.ipynb
-│   ├── training_summary.md
-│   └── res/                # Notebook resources and outputs
+│   ├── 2_Baseline_ResNet18.ipynb
+│   ├── 3_Model_From_Scratch_v1_fixed.ipynb
+│   ├── 4_Flexible_Model_Comparison.ipynb
+│   ├── 5_Custom_Model_Optimization.ipynb
+│   ├── 6_Deeper_CNN_Optimisation.ipynb
+│   └── res/                 # Notebook resources and outputs
 ├── report/                  # Project report and presentation
-├── scripts/                # Training and evaluation scripts
+├── scripts/                 # Training and evaluation scripts
 │   ├── colab_integration.py
 │   ├── evaluate_model.py
 │   ├── train_baseline.py
 │   ├── train_custom_cnn.py
-│   └── train_flexible.py
+│   ├── train_flexible.py
+│   └── train_parallel.py
 ├── src/                    # Source code
 │   ├── data/               # Data processing modules
+│   │   ├── augmentation.py
+│   │   ├── dataloader.py
+│   │   ├── dataset.py
+│   │   └── preprocessing.py
 │   ├── models/             # Model architecture modules
+│   │   ├── attention.py
+│   │   ├── baseline.py
+│   │   ├── custom_cnn.py
+│   │   ├── dataparallel_utils.py
+│   │   ├── enhanced_cnn.py
+│   │   ├── enhanced_flexible_cnn.py
+│   │   ├── flexible_cnn.py
+│   │   └── model_utils.py
 │   ├── training/           # Training utilities
+│   │   ├── enhanced_trainer.py
+│   │   ├── metrics.py
+│   │   ├── scheduler.py
+│   │   └── trainer.py
 │   └── visualization/      # Visualization utilities
-└── tests/                  # Unit tests
+│       └── plotting.py
+└── tests/                  # Test results and experiment outputs
+    ├── base-cnn-20250430.085509/
+    ├── deeper-cnn-20250430.093116/
+    ├── optimized_deeper_cnn/
+    ├── regularized-cnn-20250430.111203/
+    ├── resnet_18.20250430.114435/
+    └── wider-cnn-20250430.103336/
 ```
 
 ## Getting Started
@@ -84,13 +114,25 @@ proj-h419-MIC/
 #### Training the ResNet18 baseline model
 
 ```bash
-python scripts/train_baseline.py
+python scripts/train_baseline.py --config config/baseline_resnet18.yaml
 ```
 
 #### Training a custom CNN model
 
 ```bash
-python scripts/train_custom_cnn.py
+python scripts/train_custom_cnn.py --config config/custom_cnn_base.yaml
+```
+
+#### Training with multiple model variations
+
+```bash
+python scripts/train_flexible.py --config config/flexible_framework.yaml
+```
+
+#### Evaluating a trained model
+
+```bash
+python scripts/evaluate_model.py --model_path tests/optimized_deeper_cnn/best_model.pth
 ```
 
 #### Using Google Colab for GPU acceleration
@@ -112,6 +154,23 @@ device = check_gpu()
 # Your device will automatically be set to use GPU if available
 ```
 
+## Model Architectures
+
+### Baseline Model (ResNet18)
+We use a pre-trained ResNet18 model with a modified classifier head to establish a strong baseline.
+
+### Custom CNN
+Our custom CNN architecture features multiple convolutional blocks with batch normalization, dropout, and a global pooling strategy.
+
+### Enhanced Models
+We've implemented several enhanced architectures:
+
+1. **Deeper CNN**: More convolutional layers for better feature extraction
+2. **Wider CNN**: More filters per layer for capturing diverse features
+3. **Regularized CNN**: Enhanced dropout and augmentation for better generalization
+4. **Attention-Enhanced CNN**: Incorporating attention mechanisms to focus on important features
+5. **Residual CNN**: Including residual connections for better gradient flow
+
 ## Results
 
 Results from our model experiments will be published upon completion of the project.
@@ -130,9 +189,11 @@ The project uses a YAML-based configuration system to manage experiment paramete
 The `config/` directory contains several configuration templates:
 
 - **baseline_resnet18.yaml**: Parameters for training the ResNet18 transfer learning model
-- **custom_model_v1.yaml**: Parameters for training our custom CNN architecture
-- **flexible_framework.yaml**: Dynamic configuration supporting multiple architectures and training strategies
-- **optimized_custom_cnn.yaml**: Enhanced parameters for optimizing the custom CNN model
+- **custom_cnn_base.yaml**: Parameters for training our basic custom CNN architecture
+- **custom_cnn_deeper.yaml**: Configuration for deeper network architecture
+- **custom_cnn_wider.yaml**: Configuration for wider network architecture
+- **custom_cnn_regularized.yaml**: Enhanced parameters with regularization techniques
+- **optimized_deeper_cnn.yaml**: Optimized deeper CNN model with advanced features
 
 ### Using Configurations
 
@@ -163,6 +224,7 @@ The project includes a systematic approach to optimize neural network performanc
 - **Advanced Learning Rate Scheduling**: OneCycle policy for faster convergence
 - **Regularization Techniques**: Gradient clipping, adaptive dropout, and early stopping
 - **Improved Weight Decay**: AdamW optimizer with properly configured weight decay
+- **Architecture Enhancements**: Attention mechanisms and residual connections
 - **Hyperparameter Tuning**: Systematic exploration of key parameters
 
 ### Optimization Workflow
@@ -180,10 +242,17 @@ For a detailed guide on CNN optimization, see `docs/cnn_optimization_strategies.
 The `notebooks/` directory contains interactive explorations of the project:
 
 1. **1-Dataset Acquisition and Exploration.ipynb**: Initial dataset inspection, class distribution analysis, and sample visualization
-2. **2-Baseline_ResNet18.ipynb**: Implementation of the ResNet18 transfer learning approach with performance evaluation
-3. **3-Model_From_Scratch_v1.ipynb**: Development and training of custom CNN architecture from first principles
-4. **4-Flexible_Model_Framework.ipynb**: Demonstration of the flexible training framework using various model architectures
-5. **5-Custom_Model_Optimization.ipynb**: Advanced optimization techniques applied to the custom CNN model
+2. **2_Baseline_ResNet18.ipynb**: Implementation of the ResNet18 transfer learning approach with performance evaluation
+3. **3_Model_From_Scratch_v1_fixed.ipynb**: Development and training of custom CNN architecture from first principles
+4. **4_Flexible_Model_Comparison.ipynb**: Demonstration of the flexible training framework using various model architectures
+5. **5_Custom_Model_Optimization.ipynb**: Advanced optimization techniques applied to the custom CNN model
+6. **6_Deeper_CNN_Optimisation.ipynb**: Implementation of deeper architectures with attention mechanisms and residual connections
+
+## Contributors
+
+- [Your Name]
+- [Team Member 1]
+- [Team Member 2]
 
 ## Acknowledgments
 
