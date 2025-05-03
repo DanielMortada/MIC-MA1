@@ -4,44 +4,50 @@
 % =====================================
 
 \section{Dataset and Experimental Setup}
-\subsection{Dataset Description}
-This study utilizes a musical instrument image dataset sourced from Kaggle \cite{gpiosenka2021}, which encompasses 30 distinct instrument classes. The images were initially collected via internet searches and subsequently curated using a duplicate image detection algorithm to ensure dataset integrity. For consistency, all images were standardized to the 224 × 224 × 3 RGB format and stored as JPG files.
 
-The dataset is partitioned for each class as follows:
-\begin{itemize}
-    \item Training set: Comprising the majority of images.
-    \item Validation set: Containing 5 images per class.
-    \item Test set: Also containing 5 images per class.
-\end{itemize}
+\subsection{Dataset}
+\noindent
+We use the Kaggle musical‑instrument image set \cite{gpiosenka2021} comprising 30 classes. After duplicate removal, each image is resized to $224 \times 224 \times 3$ RGB and stored as JPG. For every class, the data are split into a training set, five‑image validation set, and five‑image test set.
 
-This partitioning strategy facilitates robust model training, effective hyperparameter tuning, and unbiased performance evaluation. Notably, the dataset presents several challenges characteristic of real-world image classification tasks, including:
-\begin{itemize}
-    \item Significant variability in instrument positioning, lighting conditions, and background clutter.
-    \item The occasional presence of human players, introducing occlusion and additional complexity.
-    \item Inherent differences in instrument size, color, and manufacturing details across samples.
-    \item A limited number of training examples available for certain instrument classes.
-\end{itemize}
+\noindent
+This collection poses real‑world challenges: variable pose, lighting, and background; occasional players causing occlusion; inter‑instrument diversity in size and finish; and limited samples for some classes (\autoref{fig:sampleimages}).
 
-% TODO: Insert figure showing sample images
+\begin{figure}[htbp]
+    \centering
+    \subfloat[Ocarina]{%
+        \includegraphics[width=0.41\linewidth]{figures/sample_data_image.png}%
+    }
+    \subfloat[Violin]{%
+        \includegraphics[width=0.41\linewidth]{figures/sample data image 1.png}%
+    }\\[1ex]
+    \subfloat[Didgeridoo]{%
+        \includegraphics[width=0.41\linewidth]{figures/sample data image 2.png}%
+    }
+    \subfloat[Clarinet]{%
+        \includegraphics[width=0.41\linewidth]{figures/sample data image 3.png}%
+    }
+    \caption{Example images from the 30-class musical instrument dataset. Each sample illustrates class variability in pose, background, and appearance.}
+    \label{fig:sampleimages}
+\end{figure}
 
-\subsection{Data Preprocessing and Augmentation}
-To enhance model robustness and mitigate the risk of overfitting, several preprocessing and data augmentation techniques were applied during training:
-\begin{itemize}
-    \item \textbf{Normalization:} All images were normalized using the standard ImageNet mean and standard deviation values (mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]).
-    \item \textbf{Resizing:} Images were uniformly resized to 224×224 pixels to ensure consistent input dimensions for the models.
-    \item \textbf{Augmentation:} A suite of transformations was applied, including random horizontal flips, random rotations (within ±10°), color jittering, and slight random cropping.
-\end{itemize}
 
-Data augmentation serves the dual purpose of artificially expanding the effective size of the training dataset and improving the model's generalization capabilities by exposing it to plausible variations (e.g., differing orientations, lighting conditions) not explicitly present in the original data. This is particularly crucial for the task of musical instrument classification.
+
+\subsection{Pre‑processing and Augmentation}
+\noindent
+Images are normalized with ImageNet statistics (mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225]), resized to $224 \times 224$, and augmented during training by random horizontal flips, rotations ($\pm 10^\circ$), color jitter, and slight random crops. These operations enlarge the effective training set and improve generalization.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{figures/training_post_augmentation.png}
+    \caption{Illustration of the medium-strength data augmentation pipeline applied to the musical instrument dataset. The augmentation process includes random rotations, horizontal flips, color jittering, and random affine transformations.}
+    \label{fig:training_augmentation}
+\end{figure}
+
+
 
 \subsection{Experimental Setup}
-All experiments were conducted utilizing the PyTorch deep learning framework, executed on hardware equipped with GPU acceleration to reduce computational time. Standardized experimental protocols were established and maintained across all phases:
-\begin{itemize}
-    \item \textbf{Loss Function:} Cross-entropy loss was employed as the objective function.
-    \item \textbf{Optimizer:} The Adam optimizer was used with an initial learning rate set to 0.001.
-    \item \textbf{Batch Size:} A consistent batch size of 32 was used for all training runs.
-    \item \textbf{Early Stopping:} Training was regulated using an early stopping mechanism based on validation accuracy, with a patience of 10 epochs.
-    \item \textbf{Primary Metric:} Accuracy served as the primary metric for performance evaluation.
-\end{itemize}
+\noindent
+All models are implemented in PyTorch and trained on a GPU. Unless noted, we use cross‑entropy loss, the Adam optimizer (initial learning rate 0.001), batch size 32, and early stopping with a patience of 10 epochs, evaluating performance with accuracy.
 
-For the baseline ResNet-18 model, transfer learning was employed by initializing the network with weights pre-trained on ImageNet. Conversely, all custom CNN models were initialized with random weights following the He initialization scheme \cite{he2015delving}. Maintaining consistent preprocessing, optimization parameters, and evaluation procedures across all experimental phases was paramount to ensure fair and reliable comparisons, particularly during the architectural variant analysis in Phase 2.
+\noindent
+The ResNet‑18 baseline is fine‑tuned from ImageNet weights, whereas custom CNNs start from He‑initialized random weights \cite{he2015delving}. Identical pre‑processing, optimization, and evaluation protocols are applied across phases to ensure fair comparison.

@@ -4,122 +4,103 @@
 % =====================================
 
 \section{Methodology}
-This section delineates the three-phase methodology employed for the task of musical instrument classification, encompassing transfer learning, custom CNN architecture development, and subsequent systematic optimization.
+\noindent
+Our three‑phase pipeline moves from a transfer‑learning baseline to bespoke architectures and targeted optimisation.
 
-\subsection{Phase 1: Comparative Analysis of Transfer Learning and Custom CNN}
-Our initial phase focused on establishing a robust performance baseline via transfer learning, while concurrently developing a bespoke custom CNN architecture.
+\subsection{Phase~1 – Transfer Learning vs. Custom CNN}
+\noindent
+\textbf{Baseline.} A ResNet‑18 pre‑trained on ImageNet is fine‑tuned by replacing the final layer with 30 outputs and training the whole network at a reduced learning rate (\autoref{fig:resnet18_arch}).
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\columnwidth, height = 3cm]{figures/resnet18_architecture.png}
+    \caption{ResNet-18 architecture with residual connections. The diagram illustrates the network's 18-layer structure with identity shortcut connections that facilitate gradient flow during training. The final fully-connected layer is replaced with a 30-output layer corresponding to the instrument classes for fine-tuning in our task \cite{resnet18_fig}.}
+    \label{fig:resnet18_arch}
+\end{figure}\\  
+\textbf{Custom.} A five‑block CNN (channels: 3‑32‑64‑128‑256‑512) with $3 \times 3$ kernels, batch normalisation, ReLU, max‑pool, dropout, global‑average pooling, and a 30‑way classifier is trained from scratch (\autoref{fig:pyramid_cnn}).
 
-\subsubsection{Transfer Learning using ResNet-18}
-We selected the well-established ResNet-18 architecture \cite{he2016deep} as our baseline model, primarily due to its proven efficacy across diverse computer vision tasks and its inherent architectural efficiency. Notably, its incorporation of residual connections facilitates gradient flow, rendering it particularly suitable for transfer learning applications.
+% Place this in sections/figures.tex or directly where you need the figure
+% Requires \usepackage{tikz}
 
-Our transfer learning procedure involved the following steps:
+% Add this to your preamble
+
+% -------------------------------------
+% Vertical pyramidal CNN figure
+% -------------------------------------
+
+\begin{figure}[h!]
+    \centering
+    \rotatebox{90}{ % rotate 90 degrees
+        \includegraphics[width=0.35\linewidth]{figures/pyramid_cnn.png}
+    }
+    \caption{Pyramidal custom CNN architecture. Five convolutional blocks progressively increase channels, followed by global average pooling and a 30-class classifier. Colors indicate block types: input (blue), convolution (orange), pooling (green), dense (purple).}
+    \label{fig:pyramid_cnn}
+\end{figure}
+
+
+\subsection{Phase~2 – Framework and Architecture Survey}
+\noindent
+A common PyTorch framework fixes data loading, augmentation, optimiser, and metrics, ensuring that accuracy differences arise only from architecture. Variants examined (as illustrated in Table \ref{tab:cnn_variants}) are:  
+(i) Base CNN, (ii) Deeper (+ extra blocks), (iii) Wider (more filters), (iv) Regularised (extra dropout/\!weight decay), and (v) ResNet‑18 as reference. Training dynamics, accuracy, and compute cost guide selection.
+
+\begin{table}[htbp]
+\caption{Architectural Comparison of CNN Variants}
+\label{tab:cnn_variants}
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Feature} & \textbf{Base CNN} & \textbf{Deeper CNN} & \textbf{Wider CNN} & \textbf{Regularised CNN} \\
+\midrule
+Conv. Blocks & 5 & 7 & 5 & 5 \\
+Final Channels & 512 & 512 & 1024 & 512 \\
+Layers & 10 & 14 & 10 & 10 \\
+Dropout Rate & 0.25 & 0.25 & 0.25 & 0.4 \\
+Weight Decay & 1e-4 & 1e-4 & 1e-4 & 1e-3 \\
+Parameters (M) & 8.6 & 9.2 & 22.1 & 8.6 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Phase~3 – Deeper CNN Optimisation}
+\noindent
+The best custom model (Deeper CNN) is refined systematically through an iterative optimization approach.
+
+\subsubsection{Phase~3.1 – Initial Optimization Approach}
+\noindent
+Building on architectural insights from ResNet \cite{he2016deep}, we implemented several advanced features:
+
 \begin{itemize}
-    \item Initialization of the network with weights pre-trained on the ImageNet dataset.
-    \item Replacement of the final fully-connected layer with a new layer comprising 30 output units, corresponding to the instrument classes.
-    \item Fine-tuning of the entire network using a reduced learning rate to adapt the pre-learned features to the specific nuances of the target task.
-\end{itemize}
-ResNet-18's efficiency and residual connections effectively mitigate the vanishing gradient problem, thereby enabling successful fine-tuning across the network depth.
-
-% TODO: Insert diagram showing ResNet-18 architecture
-
-\subsubsection{Custom CNN Architecture Development}
-As an alternative to leveraging pre-trained models, we developed a custom CNN architecture specifically tailored for musical instrument classification. This architecture adopts a pyramidal structure, characterized by progressively increasing channel depth and decreasing spatial dimensions—a common design pattern in effective CNNs.
-
-The custom CNN comprises five sequential convolutional blocks:
-\begin{itemize}
-    \item \textbf{Block 1:} 3 → 32 → 32 channels (designed for basic feature detection, e.g., edges, textures)
-    \item \textbf{Block 2:} 32 → 64 → 64 channels
-    \item \textbf{Block 3:} 64 → 128 → 128 channels
-    \item \textbf{Block 4:} 128 → 256 → 256 channels
-    \item \textbf{Block 5:} 256 → 512 → 512 channels (designed for complex, high-level features)
-\end{itemize}
-Each block consists of two convolutional layers, incorporating batch normalization and ReLU activation functions, followed by max pooling for spatial downsampling and dropout for regularization. This hierarchical structure allows the network to construct increasingly complex feature representations.
-
-Subsequent to the convolutional blocks, global average pooling reduces the feature maps into a 512-dimensional vector. This vector is then processed by a classifier head, which includes a hidden layer, dropout, and a final output layer with 30 units.
-
-Key design principles underpinning this custom architecture include:
-\begin{itemize}
-    \item \textbf{Progressive Feature Extraction:} Increasing channel depth facilitates the learning of a feature hierarchy.
-    \item \textbf{Balanced Network Depth:} The architecture aims for sufficient depth to capture complexity without inducing significant optimization challenges.
-    \item \textbf{Regularization:} Batch normalization and dropout are employed to mitigate overfitting.
-    \item \textbf{Parameter Efficiency:} Utilization of small 3×3 kernels and controlled channel progression promotes computational efficiency.
-    \item \textbf{Global Average Pooling:} This layer reduces the number of parameters compared to traditional fully-connected layers and enhances translation invariance.
-\end{itemize}
-
-% TODO: Insert diagram illustrating the custom CNN architecture
-
-\subsection{Phase 2: Flexible Experimental Framework and Architectural Comparison}
-Building upon the initial findings, Phase 2 broadened the investigation to systematically explore multiple model architectures. To facilitate this, we developed a flexible experimental framework designed for rigorous, controlled comparisons among different CNN variants.
-
-\subsubsection{Flexible Experimental Framework Design}
-This framework was engineered to ensure that performance differences could be primarily attributed to architectural modifications rather than confounding variables. Key features include:
-\begin{itemize}
-    \item Consistent data loading and preprocessing pipelines across all experiments.
-    \item Standardized training procedures with easily configurable hyperparameters.
-    \item Uniform evaluation metrics and integrated visualization tools.
-    \item Automated logging of experimental results for streamlined comparative analysis.
-    \item Modular architecture definition managed through configuration files.
-\end{itemize}
-This systematic methodology allows for reliable attribution of performance variations to specific design choices, drawing inspiration from established architecture search practices \cite{zoph2018learning, tan2019efficientnet}.
-
-\subsubsection{Investigated Architecture Variants}
-Within Phase 2, we evaluated several architectural variations derived from our base custom CNN:
-\begin{itemize}
-    \item \textbf{Base Custom CNN:} The original architecture developed in Phase 1.
-    \item \textbf{Deeper CNN:} An extension of the base model with additional convolutional blocks to increase network depth.
-    \item \textbf{Wider CNN:} A variant with an increased number of filters (channels) in each convolutional layer.
-    \item \textbf{Regularized CNN:} The base model incorporating supplementary regularization techniques.
-    \item \textbf{ResNet-18:} Maintained throughout as a consistent performance baseline.
-\end{itemize}
-For each variant, we meticulously analyzed training dynamics, convergence characteristics, final accuracy, and computational overhead to identify the most promising architectural motifs for this specific classification task.
-
-% TODO: Insert table or diagram comparing architecture variants
-
-\subsection{Phase 3: Optimization of the Deeper CNN}
-The culmination of our project, Phase 3, centered upon the targeted optimization of the Deeper CNN architecture, identified as the most effective custom model in Phase 2. This phase was conducted in two distinct subphases, representing an iterative optimization approach with valuable lessons derived from initial setbacks.
-
-\subsubsection{Phase 3.1: Initial Optimization Approach}
-Our first optimization attempt focused on implementing several advanced techniques considered to be best practices in deep learning:
-\begin{itemize}
-    \item \textbf{Architectural Enhancements:} Introduction of residual connections to facilitate gradient flow and mitigate the vanishing gradient problem, combined with a progressive dropout strategy ranging from 0.1 to 0.5 across network layers.
-    \item \textbf{Optimizer Selection:} Replacement of standard Adam with AdamW, which implements weight decay correctly by decoupling it from the gradient updates, configured with a moderately high weight decay (0.001).
-    \item \textbf{Learning Rate Management:} Implementation of the OneCycleLR scheduler with a maximum learning rate of 0.003 and 30\% of training allocated to the warmup phase.
-    \item \textbf{Regularization Techniques:} Application of gradient clipping (max norm: 1.0) and extended training duration (75 epochs) combined with early stopping mechanisms (patience: 25 epochs).
-    \item \textbf{Data Augmentation:} Reduction of augmentation strength from optimized to medium level to potentially prevent excessive distortion of key instrument features.
-\end{itemize}
-Unexpectedly, this first optimization approach resulted in a performance regression, with test accuracy declining to 81\% compared to the original Deeper CNN's 86.67\%. Detailed analysis suggested that the various techniques, while individually sound, may have created unfavorable interactions—particularly potential over-regularization from the combined effect of residual connections, dropout, and weight decay.
-
-\subsubsection{Phase 3.2: Refined Optimization Strategy}
-Drawing crucial insights from the initial setback, we devised a significantly refined strategy for the second optimization attempt:
-\begin{itemize}
-    \item \textbf{Enhanced Data Augmentation:} Implementation of class-specific augmentation strategies, particularly focusing on instrument classes identified as challenging in Phase 3.1 (e.g., Didgeridoo, Flute, Clarinet, Trombone, Sitar, Alphorn), utilizing calibrated transformation techniques with appropriate crop scales (0.8-1.0) and rotation angles (±15°).
-    \item \textbf{Architecture Refinements:} Selective application of attention mechanisms exclusively to deeper layers (layers 4-6), refinement of the graduated dropout strategy with a gentler progression ([0.05, 0.1, 0.15, 0.2, 0.25, 0.3]), and more carefully implemented residual connections with slight adjustment to network width (final convolutional layer expanded to 640 channels).
-    \item \textbf{Training Strategy Optimization:} Fine-tuning of the AdamW optimizer with reduced weight decay (0.0005), recalibration of the OneCycleLR learning rate scheduler (max\_lr=0.001, pct\_start=0.25), increased gradient clipping threshold (2.0), and leveraging mixed precision training for computational efficiency.
-    \item \textbf{Advanced Experimental Techniques:} Reduction of label smoothing to 0.05 (from an initial setting of 0.1), extended training duration (100 epochs) coupled with patience-based early stopping criteria (patience=25, delta=0.001), and batched training with larger mini-batches (64 vs. 32) enabled by mixed precision.
-\end{itemize}
-This multi-faceted optimization strategy, informed by failure analysis from Phase 3.1, was applied systematically, allowing for careful monitoring of validation performance and informed adjustments at each stage, with the overarching goal of maximizing the Deeper CNN's performance.
-
-\subsubsection{Enhanced Architecture Components}
-Specific architectural enhancements incorporated during this phase included:
-\begin{itemize}
-    \item \textbf{Residual Connections:} Skip connections were integrated between convolutional blocks to enhance gradient propagation throughout the deep network, adapting principles from ResNet architectures.
-    \item \textbf{Graduated Dropout Strategy:} A progressive dropout schedule (e.g., [0.1, 0.2, ..., 0.5]) was implemented, increasing the dropout rate in deeper layers to provide intensified regularization where potentially most needed.
-    \item \textbf{Selective Attention Mechanism:} Attention mechanisms were strategically applied (enabled via the `enhanced_flexible_cnn` configuration) to potentially allow the network to focus computational resources on the most informative high-level features.
+    \item \textbf{Architecture.} Residual connections to improve gradient flow through the network, enhancing training of deeper layers.
+    \item \textbf{Regularization.} Progressive dropout schedule (0.1--0.5) that increases with network depth, providing stronger regularization in later, more specialized layers.
+    \item \textbf{Optimization.} AdamW optimizer with weight decay 0.001 (decoupled from gradient updates \cite{loshchilov2017decoupled}), OneCycleLR scheduling with maximum learning rate 0.003, and gradient clipping at norm 1.0 to stabilize training.
+    \item \textbf{Training.} Reduced augmentation strength to preserve key structural features of instruments, extended training to 75 epochs with increased early stopping patience (25 epochs).
 \end{itemize}
 
-\subsubsection{Advanced Training Configuration Details}
-Our optimized training configuration incorporated several advanced techniques:
+\noindent
+This approach aimed to balance improved gradient flow through the network with appropriate regularization to prevent overfitting.
+
+\subsubsection{Phase~3.2 – Failure-Driven Refinement}
+\noindent
+Systematic analysis of Phase~3.1 failures revealed an over-regularization problem, leading to carefully calibrated adjustments:
+
 \begin{itemize}
-    \item \textbf{AdamW Optimizer:} Selected for its improved handling of weight decay compared to standard Adam, utilized with a decay value of 0.001.
-    \item \textbf{OneCycleLR Scheduler:} Implemented to potentially achieve faster yet stable convergence, configured with a maximum learning rate of 0.01 and dedicating 30\% of iterations to an initial warmup phase (`pct_start=0.3`).
-    \item \textbf{Gradient Clipping:} Applied with a maximum norm threshold of 1.0 to mitigate the risk of gradient explosion and further stabilize the training dynamics.
-    \item \textbf{Mixed Precision Training:} Leveraged to accelerate computations by performing suitable operations in half-precision (FP16), thereby reducing memory footprint and potentially speeding up training.
-    \item \textbf{Training Duration and Early Stopping:} Configured for a maximum of 75 epochs, but regulated by an early stopping mechanism (patience=15) based on validation performance to prevent overfitting.
-    \item \textbf{Label Smoothing:} Applied with a smoothing factor of 0.1 to regularize the model by discouraging overconfident predictions.
+    \item \textbf{Augmentation.} Class-specific transforms for challenging instruments (wind instruments and those with complex shapes), including targeted random cropping with scale factors 0.8--1.0, more conservative rotation ($\pm 15^\circ$ instead of $\pm 30^\circ$), and balanced color jittering to preserve instrument details.
+    
+    \item \textbf{Architecture.} Selective attention mechanisms implemented only in deeper layers (4--6) to focus on semantically meaningful features while maintaining efficient computation. Gentler dropout progression (0.05--0.3) to reduce regularization pressure, with increased final convolutional width (640 channels) for richer feature representation.
+    
+    \item \textbf{Training.} Fine-tuned optimization with AdamW (weight decay reduced to 0.0005), OneCycleLR with modified parameters (max\_lr 0.001, pct\_start 0.25), increased gradient clipping threshold (2.0), mixed precision training for computational efficiency, extended training to 100 epochs with early stopping patience of 25 epochs, mild label smoothing (0.05) to improve generalization, and increased batch size to 64.
 \end{itemize}
 
-\subsubsection{Class-Specific Augmentation Strategy}
-Recognizing from prior analyses that certain classes (e.g., Alphorn, Flute, Clarinet, Didgeridoo) posed persistent classification challenges, a specialized augmentation strategy (`augmentation_strength: optimized`) was devised:
-\begin{itemize}
-    \item \textbf{Targeted Transformations:} Stronger, yet carefully controlled, augmentation transformations were applied specifically to images belonging to these identified challenging classes, while a more moderate augmentation regime was maintained for classes already classified with high accuracy. (Specific parameters, such as crop scale 0.8-1.0 and rotation ±15°, are implementation details within this strategy).
-\end{itemize}
+\noindent
+Figure~\ref{fig:deeper_cnn_arch} illustrates the architectural evolution from Phase~3.1 to Phase~3.2.
+
+\begin{figure}[htbp]
+    \centering
+    % This is a placeholder for the architectural comparison figure
+    % Replace with actual figure when available
+    \caption{Architectural evolution of the Deeper CNN model. Phase~3.1 implemented uniform residual connections throughout the network, while Phase~3.2 introduced selective attention mechanisms in deeper layers (4--6) and employed a more graduated dropout pattern. Colors represent different components: convolutional layers (orange), residual connections (blue), attention mechanisms (green), and dropout (red, with intensity representing dropout rate).}
+    \label{fig:deeper_cnn_arch}
+\end{figure}
+
+\subsection{Implementation Details}
+\noindent
+All experiments use cross‑entropy loss, batch size 32 (64 in Phase~3.2), ImageNet normalisation, and early stopping (patience 10 unless stated). Custom models start from He initialisation \cite{he2015delving}; all code runs on a single GPU (Google Collab's T4).

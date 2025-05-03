@@ -1,20 +1,20 @@
+% =====================================
 % Conclusion Section
+% File: sections/conclusion.tex
+% =====================================
+
 \section{Conclusion}
-This paper presented a comprehensive three-phase investigation into musical instrument classification using CNNs. Phase 1 contrasted a ResNet-18 transfer learning baseline (99.33\% test accuracy) with a custom CNN (80.67\% accuracy). While transfer learning offered superior performance and faster convergence, the custom model provided domain-specific insights and a compact footprint.
+\noindent
+We investigated musical‑instrument image classification in three phases. Phase~1 showed the strength of transfer learning (ResNet‑18, 99.33\%) over a scratch CNN (80.67\%). Phase~2 demonstrated that added depth (Deeper CNN, 86.67\%) beats width or heavy regularisation. Phase~3 confirmed that naive stacking of advanced tricks can hurt (81\%), but failure‑driven refinements – selective attention, lighter dropout, class‑specific augmentation, mixed precision – lifted the custom model to 93.33\%, only 6\% below the baseline.
 
-Phase 2 systematically compared architectural variants using a flexible framework. The Deeper CNN (86.67\% accuracy) outperformed Base (85.33\%), Regularized (81.33\%), and Wider (80.67\%) variants, suggesting depth was more beneficial than width for this task and highlighting the need for balanced regularization.
-
-Phase 3 revealed the complexities of neural network optimization through a particularly instructive two-stage process. The initial optimization attempt (Phase 3.1), despite applying theoretically sound techniques such as residual connections and progressive dropout, unexpectedly resulted in performance regression (81.00\% accuracy). This setback provided valuable insights regarding potential over-regularization and negative parameter interactions. The subsequent refined approach (Phase 3.2), meticulously informed by failure analysis, successfully integrated selective attention, balanced regularization, class-specific augmentation, and mixed precision training. These strategically calibrated enhancements yielded a final test accuracy of 93.33\%, representing a substantial 12.33\% improvement over the first optimization attempt and narrowing the gap with the ResNet-18 baseline to just 6.00\%.
-
-Collectively, our work offers several key contributions:
+\noindent
+Key contributions are:
 \begin{itemize}
-    \item A systematic methodology for developing, comparing, and optimizing custom CNNs for specialized tasks, demonstrating the critical importance of empirical validation over theoretical best practices.
-    \item Valuable insights into optimization pitfalls, particularly how the combined effect of multiple regularization techniques can unexpectedly hinder model performance.
-    \item Empirical support for applying selective attention primarily to deeper layers and implementing graduated regularization strategies tailored to different network depths.
-    \item Demonstration of how targeted, class-specific data augmentation can substantially improve performance on challenging categories.
-    \item Evidence that methodical failure analysis often provides more valuable guidance than immediate success, underscoring the inherently iterative nature of deep learning optimization.
+    \item A reproducible pipeline for fair comparison of transfer learning and bespoke CNNs on a 30‑class instrument set.
+    \item Evidence that depth is the most effective custom‑architecture lever, whereas over‑regularisation degrades learning.
+    \item A failure‑analysis workflow that turns regression into a 12.33\% gain via targeted augmentation and balanced regularisation.
+    \item Design lessons – class‑specific augmentation, layer‑selective attention, and moderate dropout – that generalise to similar fine‑grained vision tasks.
 \end{itemize}
 
-The study underscores that attempting multiple complex changes simultaneously can destabilize training, whereas iterative refinement based on careful analysis of setbacks can yield substantial gains. This two-phase optimization approach exemplifies how apparent failures in deep learning research, when systematically analyzed, can become stepping stones to significant breakthroughs.
-
-In conclusion, this research demonstrates that diligent design and systematic optimization—particularly when informed by thorough analysis of both successes and failures—can enable custom CNNs to approach transfer learning performance on challenging visual tasks. The validated techniques and methodological insights offer valuable design principles applicable to diverse image classification domains beyond musical instrument recognition.
+\noindent
+Attempting multiple complex changes at once can destabilise training, whereas iterative, data‑driven tuning delivers steady gains. Diligent design and systematic optimisation  -  informed by both successes and failures  -  can push custom CNNs close to high‑performing transfer‑learning baselines. 
