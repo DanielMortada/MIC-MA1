@@ -4,17 +4,17 @@ This paper presented a comprehensive three-phase investigation into musical inst
 
 Phase 2 systematically compared architectural variants using a flexible framework. The Deeper CNN (86.67\% accuracy) outperformed Base (85.33\%), Regularized (81.33\%), and Wider (80.67\%) variants, suggesting depth was more beneficial than width for this task and highlighting the need for balanced regularization.
 
-Phase 3 meticulously optimized the Deeper CNN by integrating selective attention, residual connections, graduated dropout, class-specific augmentation, and mixed precision training. These combined enhancements yielded a final test accuracy of 93.33\%, a significant 6.66\% improvement over its Phase 2 performance, narrowing the gap with the ResNet-18 baseline to 6.00\%.
+Phase 3 revealed the complexities of neural network optimization through a particularly instructive two-stage process. The initial optimization attempt (Phase 3.1), despite applying theoretically sound techniques such as residual connections and progressive dropout, unexpectedly resulted in performance regression (81.00\% accuracy). This setback provided valuable insights regarding potential over-regularization and negative parameter interactions. The subsequent refined approach (Phase 3.2), meticulously informed by failure analysis, successfully integrated selective attention, balanced regularization, class-specific augmentation, and mixed precision training. These strategically calibrated enhancements yielded a final test accuracy of 93.33\%, representing a substantial 12.33\% improvement over the first optimization attempt and narrowing the gap with the ResNet-18 baseline to just 6.00\%.
 
 Collectively, our work offers several key contributions:
 \begin{itemize}
-    \item A systematic methodology for developing, comparing, and optimizing custom CNNs for specialized tasks, including strategies for class imbalance.
-    \item Empirical support for applying selective attention primarily to deeper layers for targeted improvements without excessive computational cost.
-    \item Insights into architectural component importance for this task: depth proved more advantageous than width, and graduated dropout outperformed uniform regularization.
-    \item Identification of challenging classes (e.g., Alphorn, Flute) and validation of targeted augmentation strategies to mitigate difficulties.
-    \item Interpretable insights via visualization into how architectural enhancements improve feature discrimination.
+    \item A systematic methodology for developing, comparing, and optimizing custom CNNs for specialized tasks, demonstrating the critical importance of empirical validation over theoretical best practices.
+    \item Valuable insights into optimization pitfalls, particularly how the combined effect of multiple regularization techniques can unexpectedly hinder model performance.
+    \item Empirical support for applying selective attention primarily to deeper layers and implementing graduated regularization strategies tailored to different network depths.
+    \item Demonstration of how targeted, class-specific data augmentation can substantially improve performance on challenging categories.
+    \item Evidence that methodical failure analysis often provides more valuable guidance than immediate success, underscoring the inherently iterative nature of deep learning optimization.
 \end{itemize}
 
-The study underscores the value of incremental optimization, as attempting multiple complex changes simultaneously could destabilize training, whereas methodical refinement yielded substantial gains.
+The study underscores that attempting multiple complex changes simultaneously can destabilize training, whereas iterative refinement based on careful analysis of setbacks can yield substantial gains. This two-phase optimization approach exemplifies how apparent failures in deep learning research, when systematically analyzed, can become stepping stones to significant breakthroughs.
 
-In conclusion, this research demonstrates that diligent design and systematic optimization can enable custom CNNs to approach transfer learning performance on challenging visual tasks. The validated techniques—particularly selective attention, residual connections, and graduated dropout—offer valuable design principles applicable to other image classification domains.
+In conclusion, this research demonstrates that diligent design and systematic optimization—particularly when informed by thorough analysis of both successes and failures—can enable custom CNNs to approach transfer learning performance on challenging visual tasks. The validated techniques and methodological insights offer valuable design principles applicable to diverse image classification domains beyond musical instrument recognition.

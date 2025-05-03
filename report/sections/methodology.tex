@@ -76,14 +76,28 @@ For each variant, we meticulously analyzed training dynamics, convergence charac
 % TODO: Insert table or diagram comparing architecture variants
 
 \subsection{Phase 3: Optimization of the Deeper CNN}
-The culmination of our project, Phase 3, centered upon the targeted optimization of the Deeper CNN architecture, identified as the most effective custom model in Phase 2. Based on the preceding analysis, we devised a systematic optimization strategy addressing four key areas:
+The culmination of our project, Phase 3, centered upon the targeted optimization of the Deeper CNN architecture, identified as the most effective custom model in Phase 2. This phase was conducted in two distinct subphases, representing an iterative optimization approach with valuable lessons derived from initial setbacks.
+
+\subsubsection{Phase 3.1: Initial Optimization Approach}
+Our first optimization attempt focused on implementing several advanced techniques considered to be best practices in deep learning:
 \begin{itemize}
-    \item \textbf{Enhanced Data Augmentation:} Implementation of class-specific augmentation strategies, particularly focusing on instrument classes identified as challenging, utilizing balanced transformation techniques.
-    \item \textbf{Architecture Refinements:} Integration of selective attention mechanisms (primarily in deeper layers), refinement of the graduated dropout strategy, and incorporation of residual connections to improve gradient flow.
-    \item \textbf{Training Strategy Optimization:} Adoption of the AdamW optimizer, utilization of the OneCycleLR learning rate scheduler, application of gradient clipping, and leveraging mixed precision training.
-    \item \textbf{Advanced Experimental Techniques:} Exploration of label smoothing, extended training durations coupled with robust early stopping criteria, and fine-grained hyperparameter optimization.
+    \item \textbf{Architectural Enhancements:} Introduction of residual connections to facilitate gradient flow and mitigate the vanishing gradient problem, combined with a progressive dropout strategy ranging from 0.1 to 0.5 across network layers.
+    \item \textbf{Optimizer Selection:} Replacement of standard Adam with AdamW, which implements weight decay correctly by decoupling it from the gradient updates, configured with a moderately high weight decay (0.001).
+    \item \textbf{Learning Rate Management:} Implementation of the OneCycleLR scheduler with a maximum learning rate of 0.003 and 30\% of training allocated to the warmup phase.
+    \item \textbf{Regularization Techniques:} Application of gradient clipping (max norm: 1.0) and extended training duration (75 epochs) combined with early stopping mechanisms (patience: 25 epochs).
+    \item \textbf{Data Augmentation:} Reduction of augmentation strength from optimized to medium level to potentially prevent excessive distortion of key instrument features.
 \end{itemize}
-This multi-faceted optimization strategy was applied incrementally, allowing for careful monitoring of validation performance and informed adjustments at each stage, with the overarching goal of maximizing the Deeper CNN's performance.
+Unexpectedly, this first optimization approach resulted in a performance regression, with test accuracy declining to 81\% compared to the original Deeper CNN's 86.67\%. Detailed analysis suggested that the various techniques, while individually sound, may have created unfavorable interactions—particularly potential over-regularization from the combined effect of residual connections, dropout, and weight decay.
+
+\subsubsection{Phase 3.2: Refined Optimization Strategy}
+Drawing crucial insights from the initial setback, we devised a significantly refined strategy for the second optimization attempt:
+\begin{itemize}
+    \item \textbf{Enhanced Data Augmentation:} Implementation of class-specific augmentation strategies, particularly focusing on instrument classes identified as challenging in Phase 3.1 (e.g., Didgeridoo, Flute, Clarinet, Trombone, Sitar, Alphorn), utilizing calibrated transformation techniques with appropriate crop scales (0.8-1.0) and rotation angles (±15°).
+    \item \textbf{Architecture Refinements:} Selective application of attention mechanisms exclusively to deeper layers (layers 4-6), refinement of the graduated dropout strategy with a gentler progression ([0.05, 0.1, 0.15, 0.2, 0.25, 0.3]), and more carefully implemented residual connections with slight adjustment to network width (final convolutional layer expanded to 640 channels).
+    \item \textbf{Training Strategy Optimization:} Fine-tuning of the AdamW optimizer with reduced weight decay (0.0005), recalibration of the OneCycleLR learning rate scheduler (max\_lr=0.001, pct\_start=0.25), increased gradient clipping threshold (2.0), and leveraging mixed precision training for computational efficiency.
+    \item \textbf{Advanced Experimental Techniques:} Reduction of label smoothing to 0.05 (from an initial setting of 0.1), extended training duration (100 epochs) coupled with patience-based early stopping criteria (patience=25, delta=0.001), and batched training with larger mini-batches (64 vs. 32) enabled by mixed precision.
+\end{itemize}
+This multi-faceted optimization strategy, informed by failure analysis from Phase 3.1, was applied systematically, allowing for careful monitoring of validation performance and informed adjustments at each stage, with the overarching goal of maximizing the Deeper CNN's performance.
 
 \subsubsection{Enhanced Architecture Components}
 Specific architectural enhancements incorporated during this phase included:

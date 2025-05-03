@@ -84,30 +84,65 @@ This comparative analysis yielded several valuable insights regarding architectu
 Based on these comprehensive findings, the Deeper CNN architecture was selected as the candidate for targeted optimization in the final phase.
 
 \subsection{Phase 3 Results: Deeper CNN Optimization}
-Finally, Phase 3 focused on enhancing the performance of the selected Deeper CNN architecture through a suite of targeted optimization techniques.
+Finally, Phase 3 focused on enhancing the performance of the selected Deeper CNN architecture through a systematic, iterative optimization approach conducted in two distinct subphases.
 
-\subsubsection{Optimized Deeper CNN Performance}
-The optimized Deeper CNN achieved a final test accuracy of 93.33\%. This represents a substantial improvement of 6.66\% compared to its Phase 2 performance (86.67\%) and significantly narrows the performance gap relative to the ResNet-18 baseline (99.33\%).
+\subsubsection{Phase 3.1: Initial Optimization Results and Analysis}
+Contrary to expectations, our first optimization attempt actually resulted in a performance regression. Despite implementing several advanced techniques (residual connections, AdamW optimizer, OneCycleLR scheduling), the model achieved only 81\% test accuracy—a 5.67\% decrease from the original Deeper CNN's 86.67\%.
 
-Table II summarizes the key performance metrics for the optimized model.
-
-% TODO: Insert Table II: Performance Metrics of the Optimized Deeper CNN
-% | Metric | Value |
-% |--------|-------|
-% | Test Accuracy | 93.33% |
-% | F1 Score (Macro) | 0.9315 |
-% | Precision (Macro) | 0.9388 |
-% | Recall (Macro) | 0.9333 |
-% | Training Time | ~45 min |
-
-\subsubsection{Impact of Optimization Techniques}
-The observed performance gains likely resulted from the synergistic effects of the applied optimizations:
+The learning curves revealed several insightful patterns:
 \begin{itemize}
-    \item \textbf{Selective Attention & Residual Connections:} These architectural refinements likely improved gradient flow and enhanced the model's focus on discriminative features, thereby aiding class differentiation.
-    \item \textbf{Graduated Dropout & AdamW:} The refined regularization and optimization strategy likely achieved a better balance between mitigating overfitting and facilitating effective learning, contributing to improved convergence.
-    \item \textbf{Class-Specific Augmentation:} Targeting challenging classes (e.g., Alphorn, Flute) with tailored augmentations demonstrably improved their respective F1 scores, consequently boosting overall classification accuracy. (See Figure X).
-    \item \textbf{Mixed Precision Training:} This technique accelerated the experimental cycle, enabling more thorough exploration and tuning of hyperparameters.
+    \item \textbf{Continuous Improvement}: Both training and validation losses decreased consistently throughout all 75 epochs, with no signs of overfitting.
+    \item \textbf{Training-Validation Gap}: A substantial disparity emerged between training accuracy (approximately 61\%) and validation accuracy (approximately 87\%), suggesting potential underfitting rather than overfitting.
+    \item \textbf{Class-Specific Challenges}: Notably poor performance on wind instruments, with Didgeridoo (33\% F1-score), Flute (55\% F1-score), and Trombone (60\% F1-score) showing particularly weak recognition.
 \end{itemize}
+
+Detailed analysis uncovered several probable causes for this unexpected performance decline:
+\begin{itemize}
+    \item \textbf{Over-regularization}: The combined effect of residual connections, progressive dropout (0.1–0.5), and relatively high weight decay (0.001) likely constrained the model's learning capacity excessively.
+    \item \textbf{Suboptimal Augmentation Strategy}: The decision to reduce augmentation strength from 'optimized' to 'medium' may have limited the model's exposure to useful variations.
+    \item \textbf{Negative Parameter Interactions}: The specific combination of learning rate (max\_lr=0.003), architecture modifications, and regularization techniques created unfavorable dynamics that hindered effective training.
+    \item \textbf{Training-Validation Gap}: A substantial disparity between training accuracy (approximately 61\%) and validation accuracy (87.33\%) suggested significant underfitting rather than overfitting.
+    \item \textbf{Class-Specific Challenges}: Particularly poor performance on specific instruments—Didgeridoo (33\% F1-score), Flute (55\% F1-score), and Trombone (60\% F1-score)—indicated potential structural issues in the model's ability to capture certain visual features.
+\end{itemize}
+
+This unexpected result highlighted the complex, often unpredictable interactions between deep learning optimization techniques and underscored the necessity of empirical validation rather than sole reliance on theoretical best practices.
+
+\subsubsection{Phase 3.2: Refined Optimization Results}
+Learning from the Phase 3.1 setback, we implemented a substantially refined optimization strategy that yielded dramatically improved results. The optimized Deeper CNN achieved a final test accuracy of 93.33\%. This represents a substantial improvement of 6.66\% compared to its original Phase 2 performance (86.67\%) and a remarkable 12.33\% improvement over the first optimization attempt (81\%).
+
+Table II summarizes the key performance metrics for the optimized models across both optimization subphases.
+
+\begin{table}[ht]
+\caption{Performance Comparison of Deeper CNN Optimization Attempts}
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Model} & \textbf{Test Acc.} & \textbf{Val Acc.} & \textbf{Training Time} & \textbf{Parameters} \\
+\midrule
+ResNet-18 (Baseline) & 99.33\% & 100.00\% & 32.48 min & 11.7M \\
+Original Deeper CNN & 86.67\% & 90.67\% & 36.06 min & 9.2M \\
+Phase 3.1 Optimization & 81.00\% & 87.33\% & 42.27 min & 13.6M \\
+\textbf{Phase 3.2 Optimization} & \textbf{93.33\%} & \textbf{96.67\%} & 42.77 min & 15.0M \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Impact of Optimization Techniques and Iterative Approach}
+The dramatic performance improvement in Phase 3.2 resulted from applying key lessons learned from the Phase 3.1 setback. The successful optimizations were built on failure analysis and strategic adjustments:
+
+\begin{itemize}
+    \item \textbf{Balanced Regularization:} Phase 3.1's over-regularization was addressed through a gentler graduated dropout strategy ([0.05, 0.1, 0.15, 0.2, 0.25, 0.3] versus [0.1, 0.2, 0.3, 0.4, 0.4, 0.5]) and reduced weight decay (0.0005 versus 0.001), achieving better balance between regularization and learning capacity.
+    
+    \item \textbf{Selective Feature Enhancement:} Rather than applying attention mechanisms universally, Phase 3.2 selectively implemented them only in deeper layers (layers 4-6), allowing early layers to focus on general feature extraction without interference.
+    
+    \item \textbf{Class-Specific Augmentation:} Analysis of Phase 3.1's poor performance on specific instruments (Didgeridoo, Flute, etc.) led to targeted augmentation strategies for challenging classes, substantially improving their recognition. This approach proved particularly effective for wind instruments with distinctive shapes (Didgeridoo F1-score: 33% → 75%, Flute: 55% → 60%).
+    
+    \item \textbf{Refined Training Protocol:} The training regimen was calibrated with a more appropriate OneCycleLR learning rate schedule (max\_lr=0.001, pct\_start=0.25), increased gradient clipping threshold (2.0), and reduced label smoothing (0.05), creating more stable optimization dynamics.
+    
+    \item \textbf{Mixed Precision Training:} This technique accelerated the experimental cycle, enabling more thorough exploration and tuning of hyperparameters within comparable training time (42.77 min versus 42.27 min for Phase 3.1).
+\end{itemize}
+
+This iterative approach highlights a fundamental aspect of deep learning research: systematic analysis of failures often provides more valuable insights than immediate successes. The Phase 3.1 setback, rather than representing a dead end, served as a crucial stepping stone that informed the highly successful Phase 3.2 optimizations.
 
 % TODO: Insert Figure X: Comparison of per-class F1 scores before and after Phase 3 optimization.
 
@@ -116,7 +151,17 @@ Despite the significant overall improvement, certain instrument classes remained
 
 % TODO: Insert Figure Y: Confusion matrix for the optimized Deeper CNN.
 
-Notably, the F1 scores for previously identified challenging classes such as Alphorn, Flute, Clarinet, and Didgeridoo showed marked improvement following the targeted optimization phase, validating the effectiveness of the class-specific augmentation strategy.
+Notably, the F1 scores for previously identified challenging classes showed marked improvements following the targeted optimization phase, validating the effectiveness of the class-specific augmentation strategy. The performance analysis revealed:
+
+\begin{itemize}
+    \item \textbf{Perfect Classification (100\% F1-score):} Twenty instruments achieved perfect recognition, including Tambourine, Xylophone, Accordion, Bagpipes, Banjo, Bongo drum, Piano, Saxophone, Trombone, Tuba, and Violin, demonstrating the model's enhanced capability to identify diverse instrument types.
+    
+    \item \textbf{Improved Recognition:} Previously challenging instruments showed substantial improvements, such as Didgeridoo (33\% → 75\% F1-score), Trombone (60\% → 100\%), and Sitar (62\% → 89\%).
+    
+    \item \textbf{Persistent Challenges:} Two instruments remained particularly difficult: Alphorn (57\% F1-score, showing 100\% precision but only 40\% recall) and Flute (60\% F1-score), both sharing characteristics of being long, thin wind instruments with similar visual profiles.
+\end{itemize}
+
+The pattern of remaining misclassifications reveals an interesting insight: instruments with long, cylindrical shapes and limited distinctive visual features pose the greatest challenge even for an optimized model. This suggests that for these specific categories, additional techniques such as multi-view classification or specialized feature extraction might be necessary for further improvements.
 
 \subsubsection{Discussion}
 The results from Phase 3 demonstrate that systematic and targeted optimization can significantly elevate the performance of custom CNN architectures. The integration of techniques including selective attention, residual connections, advanced regularization, and class-specific augmentation successfully narrowed the performance discrepancy compared to the strong transfer learning baseline. This highlights the potential for custom-designed models to achieve highly competitive results in specialized domains, provided that dedicated refinement and optimization efforts are undertaken.
