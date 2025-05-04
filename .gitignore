@@ -121,12 +121,7 @@ docs/Understanding Convolutional Neural Networks 🧠_ A Beginner’s Journey in
 data.zip
 Kaggle.zip
 .vscode/settings.json
-tests/resnet_18.20250430.114435/resnet18.pt
-tests/regularized-cnn-20250430.111203/regularized_cnn.pt
-tests/deeper-cnn-20250430.093116/deeper_cnn.pt
-tests/base-cnn-20250430.085509/base_cnn.pt
 src/training/__pycache__/scheduler.cpython-312.pyc
 src/training/__pycache__/enhanced_trainer.cpython-312.pyc
 src/data/__pycache__/dataset.cpython-312.pyc
 src/models/__pycache__/enhanced_cnn.cpython-312.pyc
-tests/optimized_deeper_cnn/optimized_model.pth
