@@ -131,3 +131,12 @@ scripts/generate_custom_cnn.py
 scripts/generate_phase3_curves.py
 scripts/generate_resnet18.py
 scripts/install_viz_packages.py
+src/models/__pycache__/__init__.cpython-313.pyc
+src/models/__pycache__/attention.cpython-313.pyc
+src/models/__pycache__/enhanced_cnn.cpython-313.pyc
+docs/cnn_optimization_strategies.md
+docs/crash_course.md
+docs/diff_scheduler_optimizer.md
+docs/model_architecture_comparison.md
+docs/pipeline.md
+docs/training_and_eval_basics.md
