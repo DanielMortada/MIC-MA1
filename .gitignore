@@ -125,3 +125,9 @@ src/training/__pycache__/scheduler.cpython-312.pyc
 src/training/__pycache__/enhanced_trainer.cpython-312.pyc
 src/data/__pycache__/dataset.cpython-312.pyc
 src/models/__pycache__/enhanced_cnn.cpython-312.pyc
+scripts/generate_arch_diagram.py
+scripts/generate_attention_viz.py
+scripts/generate_custom_cnn.py
+scripts/generate_phase3_curves.py
+scripts/generate_resnet18.py
+scripts/install_viz_packages.py
