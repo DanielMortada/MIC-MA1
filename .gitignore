@@ -140,3 +140,34 @@ docs/diff_scheduler_optimizer.md
 docs/model_architecture_comparison.md
 docs/pipeline.md
 docs/training_and_eval_basics.md
+report/biblio_rectifier.bib
+report/IEEEtran.cls
+report/IMS2014_rectifier_short.tex
+report/README.md
+report/figures/challenging_augmentation.png
+report/figures/deeper_cnn_arch.png
+report/figures/final_deeper_cnn_arch.png
+report/figures/learning_curve_CustomCNN.png
+report/figures/learning_curve_DeepeCNN.png
+report/figures/learning_curve_resnet18.png
+report/figures/phase2_res_comparison_upscayl_4x_ultrasharp.png
+report/figures/phase2_res_comparison.png
+report/figures/phase3_attention.png
+report/figures/phase3_confusion.png
+report/figures/pyramid_cnn.png
+report/figures/resnet18_architecture.png
+report/figures/sample data image 1.png
+report/figures/sample data image 2.png
+report/figures/sample data image 3.png
+report/figures/sample_data_image.png
+report/figures/training_deeper_cnn_V1.png
+report/figures/training_deeper_cnn_V2.png
+report/figures/training_post_augmentation.png
+report/sections/abstract.tex
+report/sections/acknowledgment.tex
+report/sections/bibliography.tex
+report/sections/conclusion.tex
+report/sections/dataset.tex
+report/sections/introduction.tex
+report/sections/methodology.tex
+report/sections/results.tex
